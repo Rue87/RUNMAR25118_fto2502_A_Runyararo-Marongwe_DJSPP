@@ -9,12 +9,18 @@ import GenreFilter from "./components/GenreFilter";
 import PodcastGrid from "./components/PodcastGrid";
 import Pagination from "./components/Pagination";
 import styles from "./App.module.css";
+import ShowDetailPage from "./pages/ShowDetailPage";
+import { Routes, Route } from "react-router-dom";
 
 /**
  * Root component of the Podcast Explorer app.
  * Handles data fetching and layout composition.
  */
 export default function App() {
+
+    /**
+   * State to hold podcast list, loading status, and errors.
+   */
   const [podcasts, setPodcasts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,13 +28,58 @@ export default function App() {
   useEffect(() => {
     fetchPodcasts(setPodcasts, setError, setLoading);
   }, []);
-
+useEffect(() => {
+  if (podcasts.length) {
+    console.log("Podcasts updated:", podcasts);
+  }
+}, [podcasts]);
   return (
     <>
       <Header />
 
       <PodcastProvider initialPodcasts={podcasts}>
-        <main className={styles.main}>
+ <main className={styles.main}>
+          {/* Show loading spinner */}
+          {loading && (
+            <div className={styles.messageContainer}>
+              <div className={styles.spinner}></div>
+              <p>Loading podcasts...</p>
+            </div>
+          )}
+
+          {/* Show error message */}
+          {error && (
+            <div className={styles.message}>
+              <div className={styles.error}>
+                Error occurred while fetching podcasts: {error}
+              </div>
+            </div>
+          )}
+
+          {/* Only show routes when not loading and no error */}
+          {!loading && !error && (
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <section className={styles.controls}>
+                      <SearchBar />
+                      <GenreFilter genres={genres} />
+                      <SortSelect />
+                    </section>
+                    <PodcastGrid />
+                    <Pagination />
+                  </>
+                }
+              />
+              <Route path="/shows/:id" element={<ShowDetailPage />} />
+            </Routes>
+          )}
+        </main>
+        
+
+        {/*<main className={styles.main}>
           <section className={styles.controls}>
             <SearchBar />
             <GenreFilter genres={genres} />
@@ -56,7 +107,7 @@ export default function App() {
               <Pagination />
             </>
           )}
-        </main>
+        </main>*/}
       </PodcastProvider>
     </>
   );

@@ -20,6 +20,7 @@ import { useContext } from "react";
  */
 export default function PodcastGrid({ genres }) {
   const { podcasts } = useContext(PodcastContext);
+   console.log("PodcastGrid rendering with podcasts:", podcasts);
   if (!podcasts.length) {
     return (
       <p className={styles.noResults}>
