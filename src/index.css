@@ -14,7 +14,7 @@ body {
 }
 .metadataRow{
   display: flex;
-  flex-direction: wrap;
+  flex-wrap: wrap;
   gap: 8px;
 }
 .tag{
@@ -58,4 +58,45 @@ body {
 
 .seasonBlock ul {
   padding-left: 1.2rem;
+}
+.seasonHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.seasonCover {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.seasonInfo h3 {
+  margin: 0;
+}
+
+.seasonMeta {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.episodeList {
+  list-style: none;
+  padding-left: 0;
+}
+
+.episodeItem {
+  margin-bottom: 1.5rem;
+}
+
+.episodeItem h4 {
+  margin-bottom: 0.3rem;
+}
+
+.episodeMeta {
+  font-size: 0.85rem;
+  color: #888;
 }

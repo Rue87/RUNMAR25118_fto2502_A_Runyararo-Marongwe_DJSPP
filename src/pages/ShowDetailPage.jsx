@@ -41,7 +41,7 @@ export default function ShowDetailPage() {
                 </span>
               ))}
             </div>*/}
-            {Array.isArray(show.genres) && show.genres.length > 0 ? (
+            {/*{Array.isArray(show.genres) && show.genres.length > 0 ? (
   <div>
     <strong>Genres:</strong>{" "}
     {show.genres.map((id) => (
@@ -54,7 +54,23 @@ export default function ShowDetailPage() {
   <div>
     <strong>Genres:</strong> <span className="tag">Unknown</span>
   </div>
-)}
+)}*/}
+{(() => {
+  const validGenres = show.genres
+    ?.map((id) => genreMap[id])
+    .filter((title) => title && title !== "Unknown");
+
+  return validGenres?.length > 0 ? (
+    <div>
+      <strong>Genres:</strong>{" "}
+      {validGenres.map((title, index) => (
+        <span key={index} className="tag">
+          {title}
+        </span>
+      ))}
+    </div>
+  ) : null; // Don’t render anything if there are no valid genres
+})()}
 
 
             <div>
@@ -80,6 +96,54 @@ export default function ShowDetailPage() {
       </div>
 
       <div className="seasonsSection">
+  <h2>Current Season</h2>
+  {show.seasons?.length > 0 ? (
+    show.seasons.map((season, index) => (
+      <div key={index} className="seasonBlock">
+        <div className="seasonHeader">
+          <img
+            src={season.image || show.image}
+            alt={`Season ${index + 1} cover`}
+            className="seasonCover"
+          />
+          <div className="seasonInfo">
+            <h3>Season {index + 1}: {season.title || "Untitled Season"}</h3>
+            <p>{season.description || "No description available."}</p>
+            <p className="seasonMeta">
+              {season.episodes?.length ?? 0} episodes · Released{" "}
+              {season.episodes?.[0]?.date
+                ? new Date(season.episodes[0].date).getFullYear()
+                : "Unknown"}
+            </p>
+          </div>
+        </div>
+
+        {/* Episodes List */}
+        <ul className="episodeList">
+          {season.episodes?.length > 0 ? (
+            season.episodes.map((ep, epIndex) => (
+              <li key={epIndex} className="episodeItem">
+                <h4>Episode {epIndex + 1}: {ep.title || "Untitled Episode"}</h4>
+                <p>{ep.description || "No description available."}</p>
+                <span className="episodeMeta">
+                  {ep.duration || "Unknown duration"} ·{" "}
+                  {ep.date ? formatDate(ep.date) : "Unknown date"}
+                </span>
+              </li>
+            ))
+          ) : (
+            <li>No episodes in this season.</li>
+          )}
+        </ul>
+      </div>
+    ))
+  ) : (
+    <p>No seasons available.</p>
+  )}
+</div>
+
+
+      {/*<div className="seasonsSection">
         <h2>Seasons & Episodes</h2>
         {show.seasons?.length > 0 ? (
           show.seasons.map((season, index) => (
@@ -103,7 +167,7 @@ export default function ShowDetailPage() {
         ) : (
           <p>No seasons available.</p>
         )}
-      </div>
+      </div>*/}
     </div>
   );
 }
