@@ -47,6 +47,15 @@ body {
   display: flex;
   flex-direction: column;
 }
+.genre-tag {
+  background-color: #e0e7ff; 
+  color: #1e3a8a;            
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
 
 .seasonsSection {
   margin-top: 2rem;
@@ -99,4 +108,36 @@ body {
 .episodeMeta {
   font-size: 0.85rem;
   color: #888;
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.info-col {
+  flex: 1;
+  min-width: 200px;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.genre-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.genre-tag {
+  background-color: #eef2ff;
+  color: #3730a3;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
 }

@@ -1,10 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { fetchShowById } from "../api/fetchShowById";
-import { genreMap } from "../utils/genreMap";
 import { formatDate } from "../utils/formatDate";
 import "../index.css"; 
-import { usePodcastContext } from "../context/PodcastContext";// Import context hook
+import { genreMap } from "../utils/genreMap";
 
 
 /**
@@ -12,24 +11,13 @@ import { usePodcastContext } from "../context/PodcastContext";// Import context 
  * Data is loaded via the show ID from the URL.
  */
 export default function ShowDetailPage() {
-    // Get podcast ID from URL
- const { id } = useParams();
- const [show, setShow] = useState(null);
- const [loading, setLoading] = useState(true);
- const [error, setError] = useState(null);
+  // Get podcast ID from URL
+  const { id } = useParams();
+  const [show, setShow] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
- // Access the filtered list of podcasts from context
-//const { filteredPodcasts } = usePodcastContext();
-
-
-  // Find the show matching the ID param (convert ID to number)
-//const show = filteredPodcasts.find((p) => p.id === Number(id));
-
-// If no matching show found, display a not found message
-//if (!show) return <p>Podcast not found.</p>;
-
-  
- useEffect(() => {
+  useEffect(() => {
     fetchShowById(id, setShow, setError, setLoading);
   }, [id]);
 
@@ -37,7 +25,18 @@ export default function ShowDetailPage() {
   if (error) return <p>Error: {error}</p>;
   if (!show) return <p>Podcast not found.</p>;
 
-// Render the show detail page
+  // Clean up genre list
+  const filteredGenres = (show.genres || []).filter(
+    (genre) => genre !== "All" && genre !== "Featured"
+  );
+
+  // Handle both string and numeric genres
+  const getGenreTitle = (genre) => {
+    if (typeof genre === "number") return genreMap[genre] || "Unknown";
+    if (typeof genre === "string") return genre;
+    return "Unknown";
+  };
+
   return (
     <div className="showDetailContainer">
       <div className="headerSection">
@@ -47,47 +46,46 @@ export default function ShowDetailPage() {
           <h1>{show.title}</h1>
           <p>{show.description}</p>
 
-          <div className="metadataRow">
-            {/*<div>
-              <strong>Genres:</strong>{" "}
-              {show.genres.map((id) => (
-                <span key={id} className="tag">
-                  {genreMap[id] || id}
-                </span>
+       {/*  {filteredGenres.length > 0 ? (
+        <div className="genre-tags">
+          <strong>Genres:</strong>{" "}
+          {filteredGenres.map((genre, index) => (
+            <span key={index} className="genre-tag">
+              {getGenreTitle(genre)}
+            </span>
               ))}
-            </div>*/}
-            {/*{Array.isArray(show.genres) && show.genres.length > 0 ? (
-  <div>
-    <strong>Genres:</strong>{" "}
-    {show.genres.map((id) => (
-      <span key={id} className="tag">
-        {genreMap[id] || id}
-      </span>
-    ))}
-  </div>
-) : (
-  <div>
-    <strong>Genres:</strong> <span className="tag">Unknown</span>
-  </div>
-)}*/}
-{(() => {
-  const validGenres = show.genres
-    ?.map((id) => genreMap[id])
-    .filter((title) => title && title !== "Unknown");
+            </div>
+          ) : (
+            <div>
+              <strong>Genres:</strong> <span className="genre-tag">Unknown</span>
+            </div>
+          )}*/}
 
-  return validGenres?.length > 0 ? (
-    <div>
-      <strong>Genres:</strong>{" "}
-      {validGenres.map((title, index) => (
-        <span key={index} className="tag">
-          {title}
-        </span>
-      ))}
+          {/* GENRES + LAST UPDATED */}
+<div className="info-row">
+  <div className="info-col">
+    <strong>GENRES</strong>
+    <div className="genre-tags">
+      {filteredGenres.length > 0 ? (
+        filteredGenres.map((genre, index) => (
+          <span key={index} className="genre-tag">
+            {getGenreTitle(genre)}
+          </span>
+        ))
+      ) : (
+        <span className="genre-tag">Unknown</span>
+      )}
     </div>
-  ) : null; // Don’t render anything if there are no valid genres
-})()}
+  </div>
+
+  <div className="info-col align-right">
+    <strong>LAST UPDATED</strong>
+    <p>{formatDate(show.updated)}</p>
+  </div>
+</div>
 
 
+        {/*  <div className="metadataRow">
             <div>
               <strong>Total Seasons:</strong> {show.seasons?.length ?? 0}
             </div>
@@ -106,71 +104,71 @@ export default function ShowDetailPage() {
                   )
                 : 0}
             </div>
-          </div>
+          </div>*/}
+
+    {/* TOTAL SEASONS + TOTAL EPISODES */}
+<div className="info-row">
+  <div className="info-col">
+    <strong>TOTAL SEASONS</strong>
+    <p>{show.seasons?.length || 0} Seasons</p>
+  </div>
+
+  <div className="info-col align-right">
+    <strong>TOTAL EPISODES</strong>
+    <p>
+      {show.seasons
+        ? show.seasons.reduce(
+            (acc, season) => acc + (season.episodes?.length ?? 0),
+            0
+          )
+        : 0}{" "}
+      Episodes
+    </p>
+  </div>
+</div>
+
+
         </div>
       </div>
 
       <div className="seasonsSection">
-  <h2>Current Season</h2>
-  {show.seasons?.length > 0 ? (
-    show.seasons.map((season, index) => (
-      <div key={index} className="seasonBlock">
-        <div className="seasonHeader">
-          <img
-            src={season.image || show.image}
-            alt={`Season ${index + 1} cover`}
-            className="seasonCover"
-          />
-          <div className="seasonInfo">
-            <h3>Season {index + 1}: {season.title || "Untitled Season"}</h3>
-            <p>{season.description || "No description available."}</p>
-            <p className="seasonMeta">
-              {season.episodes?.length ?? 0} episodes · Released{" "}
-              {season.episodes?.[0]?.date
-                ? new Date(season.episodes[0].date).getFullYear()
-                : "Unknown"}
-            </p>
-          </div>
-        </div>
-
-        {/* Episodes List */}
-        <ul className="episodeList">
-          {season.episodes?.length > 0 ? (
-            season.episodes.map((ep, epIndex) => (
-              <li key={epIndex} className="episodeItem">
-                <h4>Episode {epIndex + 1}: {ep.title || "Untitled Episode"}</h4>
-                <p>{ep.description || "No description available."}</p>
-                <span className="episodeMeta">
-                  {ep.duration || "Unknown duration"} ·{" "}
-                  {ep.date ? formatDate(ep.date) : "Unknown date"}
-                </span>
-              </li>
-            ))
-          ) : (
-            <li>No episodes in this season.</li>
-          )}
-        </ul>
-      </div>
-    ))
-  ) : (
-    <p>No seasons available.</p>
-  )}
-</div>
-
-
-      {/*<div className="seasonsSection">
-        <h2>Seasons & Episodes</h2>
+        <h2>Current Season</h2>
         {show.seasons?.length > 0 ? (
           show.seasons.map((season, index) => (
             <div key={index} className="seasonBlock">
-              <h3>
-                Season {index + 1}: {season.title || "Untitled Season"}
-              </h3>
-              <ul>
+              <div className="seasonHeader">
+                <img
+                  src={season.image || show.image}
+                  alt={`Season ${index + 1} cover`}
+                  className="seasonCover"
+                />
+                <div className="seasonInfo">
+                  <h3>
+                    Season {index + 1}: {season.title || "Untitled Season"}
+                  </h3>
+                  <p>{season.description || "No description available."}</p>
+                  <p className="seasonMeta">
+                    {season.episodes?.length ?? 0} episodes · Released{" "}
+                    {season.episodes?.[0]?.date
+                      ? new Date(season.episodes[0].date).getFullYear()
+                      : "Unknown"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Episodes List */}
+              <ul className="episodeList">
                 {season.episodes?.length > 0 ? (
                   season.episodes.map((ep, epIndex) => (
-                    <li key={epIndex}>
-                      Episode {epIndex + 1}: {ep.title || "Untitled Episode"}
+                    <li key={epIndex} className="episodeItem">
+                      <h4>
+                        Episode {epIndex + 1}: {ep.title || "Untitled Episode"}
+                      </h4>
+                      <p>{ep.description || "No description available."}</p>
+                      <span className="episodeMeta">
+                        {ep.duration || "Unknown duration"} ·{" "}
+                        {ep.date ? formatDate(ep.date) : "Unknown date"}
+                      </span>
                     </li>
                   ))
                 ) : (
@@ -182,7 +180,8 @@ export default function ShowDetailPage() {
         ) : (
           <p>No seasons available.</p>
         )}
-      </div>*/}
+      </div>
     </div>
   );
 }
+
