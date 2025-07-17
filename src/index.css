@@ -7,3 +7,55 @@ body {
   margin: 0;
   background: #f9f9f9;
 }
+.coverImage{
+  max-width: 250px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+.metadataRow{
+  display: flex;
+  flex-direction: wrap;
+  gap: 8px;
+}
+.tag{
+  display: inline-block;
+  background: #eee;
+  border-radius: 8px;
+  padding: 4px 8px;
+  margin: 4px;
+  font-size: 14px;
+
+}
+
+.showDetailContainer {
+  max-width: 900px;
+  margin: auto;
+  padding: 1rem;
+}
+
+.headerSection {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.meta {
+  padding: 1rem;
+  flex: 1;
+}
+.updatedDate {
+  display: flex;
+  flex-direction: column;
+}
+
+.seasonsSection {
+  margin-top: 2rem;
+}
+
+.seasonBlock {
+  margin-bottom: 1.5rem;
+}
+
+.seasonBlock ul {
+  padding-left: 1.2rem;
+}
