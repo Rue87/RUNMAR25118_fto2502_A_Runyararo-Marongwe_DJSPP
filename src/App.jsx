@@ -26,8 +26,20 @@ export default function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchPodcasts(setPodcasts, setError, setLoading);
-  }, []);
+  async function load() {
+    setLoading(true);
+    const { data, error } = await fetchPodcasts();
+    if (data) setPodcasts(data);
+    if (error) setError(error);
+    setLoading(false);
+  }
+  load();
+}, []);
+
+
+  //useEffect(() => {
+  //  fetchPodcasts(setPodcasts, setError, setLoading);
+  //}, []);
 useEffect(() => {
   if (podcasts.length) {
     console.log("Podcasts updated:", podcasts);

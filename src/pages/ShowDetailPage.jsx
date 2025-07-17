@@ -4,18 +4,32 @@ import { fetchShowById } from "../api/fetchShowById";
 import { genreMap } from "../utils/genreMap";
 import { formatDate } from "../utils/formatDate";
 import "../index.css"; 
+import { usePodcastContext } from "../context/PodcastContext";// Import context hook
+
 
 /**
  * ShowDetailPage - Fetches and displays a detailed view of a single podcast show.
  * Data is loaded via the show ID from the URL.
  */
 export default function ShowDetailPage() {
-  const { id } = useParams();
-  const [show, setShow] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+    // Get podcast ID from URL
+ const { id } = useParams();
+ const [show, setShow] = useState(null);
+ const [loading, setLoading] = useState(true);
+ const [error, setError] = useState(null);
 
-  useEffect(() => {
+ // Access the filtered list of podcasts from context
+//const { filteredPodcasts } = usePodcastContext();
+
+
+  // Find the show matching the ID param (convert ID to number)
+//const show = filteredPodcasts.find((p) => p.id === Number(id));
+
+// If no matching show found, display a not found message
+//if (!show) return <p>Podcast not found.</p>;
+
+  
+ useEffect(() => {
     fetchShowById(id, setShow, setError, setLoading);
   }, [id]);
 
@@ -23,6 +37,7 @@ export default function ShowDetailPage() {
   if (error) return <p>Error: {error}</p>;
   if (!show) return <p>Podcast not found.</p>;
 
+// Render the show detail page
   return (
     <div className="showDetailContainer">
       <div className="headerSection">

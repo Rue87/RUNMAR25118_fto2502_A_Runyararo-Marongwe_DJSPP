@@ -1,5 +1,6 @@
-import React, { createContext, useEffect, useState } from "react";
-
+//import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { fetchPodcasts } from "../api/fetchPodcasts";//fetch from api
 /**
  * @typedef Podcast
  * @property {number} id - Unique identifier
@@ -25,7 +26,15 @@ export const SORT_OPTIONS = [
  * React context for sharing podcast state across components.
  * Must be used within a <PodcastProvider>.
  */
+
+//create context
 export const PodcastContext = createContext();
+
+//Custom hook to use podcast context easily
+export function usePodcastContext() {
+  return useContext(PodcastContext); 
+}
+
 
 /**
  * PodcastProvider component wraps children in a context with state for
@@ -34,12 +43,38 @@ export const PodcastContext = createContext();
  * @param {{children: React.ReactNode, initialPodcasts: Podcast[]}} props
  * @returns {JSX.Element}
  */
-export function PodcastProvider({ children, initialPodcasts }) {
+export function PodcastProvider({ children,}) {
+  const [initialPodcasts, setInitialPodcasts] = useState([]);
   const [search, setSearch] = useState("");
   const [sortKey, setSortKey] = useState("date-desc");
   const [genre, setGenre] = useState("all");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  const [loading, setLoading] = useState(false); // <-- add here
+  const [error, setError] = useState(null);      // <-- add here
+
+   useEffect(() => {
+    async function load() {
+      setLoading(true);
+      const { data, error } = await fetchPodcasts();
+      if (data) setInitialPodcasts(data);
+      if (error) setError(error);
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  //Load podcasts when app starts
+ {/* useEffect(() => {
+  async function load() {
+    const data = await fetchPodcasts();
+    setInitialPodcasts(data);
+  }
+  load();
+}, []);*/}
+
+
 
   /**
    * Dynamically calculate how many cards can fit on screen.
@@ -107,13 +142,21 @@ export function PodcastProvider({ children, initialPodcasts }) {
     return data;
   };
   /** @type {Podcast[]} */
-  const filtered = applyFilters();
+  {/*const filtered = applyFilters();
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const currentPage = Math.min(page, totalPages);
   const paged = filtered.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize
-  );
+  );*/}
+  const filtered = React.useMemo(() => applyFilters(), [initialPodcasts, search, genre, sortKey]);
+const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+const currentPage = Math.min(page, totalPages);
+const paged = React.useMemo(() => 
+  filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+  [filtered, currentPage, pageSize]
+);
+
 
   useEffect(() => {
     setPage(1);
@@ -130,8 +173,21 @@ export function PodcastProvider({ children, initialPodcasts }) {
     setPage,
     totalPages,
     podcasts: paged,
+    filteredPodcasts: filtered, // full filtered list 
     allPodcastsCount: filtered.length,
   };
+
+  //if (!initialPodcasts.length) {
+ // return <div>Loading podcasts...</div>;
+//}
+
+ if (loading) {
+    return <div>Loading podcasts...</div>; // <-- show loading UI
+  }
+
+  if (error) {
+    return <div>Error loading podcasts: {error}</div>; // <-- show error UI
+  }
 
   return (
     <PodcastContext.Provider value={value}>{children}</PodcastContext.Provider>
