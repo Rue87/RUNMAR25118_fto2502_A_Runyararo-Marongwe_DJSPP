@@ -16,10 +16,22 @@ export default function ShowDetailPage() {
   const [show, setShow] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [expandedSeasonIndex, setExpandedSeasonIndex] = useState(null);
+
+  const toggleSeason = (index) => {
+  setExpandedSeasonIndex((prevIndex) => (prevIndex === index ? null : index));
+};
 
   useEffect(() => {
     fetchShowById(id, setShow, setError, setLoading);
   }, [id]);
+
+  useEffect(() => {
+  if (show) {
+    console.log("Show Data:", show);
+      window._showSeasons = show.seasons;
+  }
+}, [show]);
 
   if (loading) return <p>Loading show details...</p>;
   if (error) return <p>Error: {error}</p>;
@@ -136,7 +148,10 @@ export default function ShowDetailPage() {
         {show.seasons?.length > 0 ? (
           show.seasons.map((season, index) => (
             <div key={index} className="seasonBlock">
-              <div className="seasonHeader">
+              <div className="seasonHeader"
+               onClick={() => toggleSeason(index)} //line to toggle
+               style={{ cursor: "pointer" }}       //Makes it look clickable
+        >
                 <img
                   src={season.image || show.image}
                   alt={`Season ${index + 1} cover`}
@@ -157,10 +172,19 @@ export default function ShowDetailPage() {
               </div>
 
               {/* Episodes List */}
+              {expandedSeasonIndex === index && (
               <ul className="episodeList">
                 {season.episodes?.length > 0 ? (
                   season.episodes.map((ep, epIndex) => (
                     <li key={epIndex} className="episodeItem">
+                        
+                        {/* Season Image */}
+        <img
+          src={season.image || show.image}
+          alt={`Season ${index + 1} cover`}
+          style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "6px" }}
+        />
+        <div className="episodeDetails">
                       <h4>
                         Episode {epIndex + 1}: {ep.title || "Untitled Episode"}
                       </h4>
@@ -169,12 +193,14 @@ export default function ShowDetailPage() {
                         {ep.duration || "Unknown duration"} ·{" "}
                         {ep.date ? formatDate(ep.date) : "Unknown date"}
                       </span>
+                      </div>
                     </li>
                   ))
                 ) : (
                   <li>No episodes in this season.</li>
                 )}
               </ul>
+              )}
             </div>
           ))
         ) : (

@@ -74,6 +74,11 @@ body {
   align-items: flex-start;
   gap: 1rem;
   margin-bottom: 1rem;
+    transition: background-color 0.3s;
+}
+
+.seasonHeader:hover {
+  background-color: #f7f7f7;
 }
 
 .seasonCover {
@@ -95,12 +100,46 @@ body {
 .episodeList {
   list-style: none;
   padding-left: 0;
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
 }
 
 .episodeItem {
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px; /* space between image and text */
+  margin-bottom: 16px
 }
 
+.episodeItem img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0; /* prevent image from shrinking */
+}
+.episodeDetails {
+  flex: 1; 
+  display: flex;
+  flex-direction: column;
+}
+.episodeDetails h4 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.episodeDetails p {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.episodeMeta {
+  font-size: 0.8rem;
+  color: #777;
+}
 .episodeItem h4 {
   margin-bottom: 0.3rem;
 }
