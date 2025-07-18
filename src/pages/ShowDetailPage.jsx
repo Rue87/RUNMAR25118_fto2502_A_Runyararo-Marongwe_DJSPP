@@ -4,6 +4,8 @@ import { fetchShowById } from "../api/fetchShowById";
 import { formatDate } from "../utils/formatDate";
 import "../index.css"; 
 import { genreMap } from "../utils/genreMap";
+import { truncateText } from "../utils/truncateText";
+
 
 
 /**
@@ -188,7 +190,7 @@ export default function ShowDetailPage() {
                       <h4>
                         Episode {epIndex + 1}: {ep.title || "Untitled Episode"}
                       </h4>
-                      <p>{ep.description || "No description available."}</p>
+                      <p>{truncateText(ep.description || "No description available.",100)}</p>
                       <span className="episodeMeta">
                         {ep.duration || "Unknown duration"} ·{" "}
                         {ep.date ? formatDate(ep.date) : "Unknown date"}
