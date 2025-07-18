@@ -1,11 +1,11 @@
 import { formatDate } from "../utils/formatDate";
 import styles from "./PodcastCard.module.css";
-import { Link } from "react-router-dom";// Imported Link for client-side navigation
+import { Link } from "react-router-dom";// Enables navigation on click
 
 
 /**
  * PodcastCard Component
- * 
+ * Displays podcast image, title, season count, genre tags (optional), and last updated date.
  * Renders a clickable card that previews podcast info.
  * Now supports routing: clicking a card navigates to the show's detail page.
  *
@@ -23,7 +23,9 @@ import { Link } from "react-router-dom";// Imported Link for client-side navigat
  * @returns {JSX.Element} The rendered podcast card component.
  */
 export default function PodcastCard({ podcast, genres }) {
-  // Convert genre IDs to visual <span> tags with genre titles
+  
+  // Convert podcast.genre IDs into visual tags, using genre titles from the passed-in genre list.
+  
 
  {/*} const genreSpans = podcast.genres.map((id) => {
     const match = genres.find((genre) => genre.id === id);
@@ -34,14 +36,14 @@ export default function PodcastCard({ podcast, genres }) {
     );
   });*/}
   const genreSpans = podcast.genres?.map((id) => {
-  if (!genres) return null; // safeguard in case genres is undefined
+  if (!genres) return null; // Prevents error if genres not provided
   const match = genres.find((genre) => genre.id === id);
   return (
     <span key={id} className={styles.tag}>
       {match ? match.title : `Unknown (${id})`}
     </span>
   );
-}) || []; // fallback to empty array if podcast.genres is undefined
+}) || []; // fallback: empty array if podcast.genres is undefined
 
 
   {/*return (

@@ -149,6 +149,7 @@ export default function ShowDetailPage() {
         <h2>Current Season</h2>
         {show.seasons?.length > 0 ? (
           show.seasons.map((season, index) => (
+              
             <div key={index} className="seasonBlock">
               <div className="seasonHeader"
                onClick={() => toggleSeason(index)} //line to toggle
@@ -163,13 +164,23 @@ export default function ShowDetailPage() {
                   <h3>
                     Season {index + 1}: {season.title || "Untitled Season"}
                   </h3>
-                  <p>{season.description || "No description available."}</p>
+                  {/*<p>{season.description || "No description available."}</p>
                   <p className="seasonMeta">
                     {season.episodes?.length ?? 0} episodes · Released{" "}
                     {season.episodes?.[0]?.date
                       ? new Date(season.episodes[0].date).getFullYear()
                       : "Unknown"}
-                  </p>
+                  </p>*/}
+                  <p className="seasonMeta">
+  {season.episodes?.length ?? 0} episodes
+  {season.episodes?.[0]?.date && (
+    <>
+      {" · Released "}
+      {new Date(season.episodes[0].date).getFullYear()}
+    </>
+  )}
+</p>
+
                 </div>
               </div>
 
@@ -192,8 +203,9 @@ export default function ShowDetailPage() {
                       </h4>
                       <p>{truncateText(ep.description || "No description available.",100)}</p>
                       <span className="episodeMeta">
-                        {ep.duration || "Unknown duration"} ·{" "}
-                        {ep.date ? formatDate(ep.date) : "Unknown date"}
+                        {ep.duration && ep.duration}
+                        {ep.duration && ep.date && " · "}
+                        {ep.date && formatDate(ep.date)}
                       </span>
                       </div>
                     </li>
