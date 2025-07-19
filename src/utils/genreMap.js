@@ -1,3 +1,10 @@
+/**
+ * A mapping of genre IDs to their corresponding human-readable genre names.
+ * Used to convert numeric genre identifiers from the podcast data into labels
+ * for display on the UI.
+ *
+ * @type {Object<number, string>}
+ */
 export const genreMap = {
   1: "Personal Growth",
   2: "Investigative Journalism",

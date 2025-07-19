@@ -7,27 +7,42 @@ import { genreMap } from "../utils/genreMap";
 import { truncateText } from "../utils/truncateText";
 
 
-
 /**
- * ShowDetailPage - Fetches and displays a detailed view of a single podcast show.
+ * ShowDetailPage Component
+ *
+ * Fetches and displays detailed podcast information for a selected show.
+ * - Uses the podcast `id` from the URL params.
+ * - Displays general show metadata (title, description, image, genres).
+ * - Renders each season with collapsible episodes.
+ * - Only displays valid release dates/durations (hides 'Unknown').
+ * 
+ * Functionalities added for current project:
+ * - Toggle season details on click.
+ * - Remove fallback "Unknown" if metadata is missing.
+ * - Truncate long episode descriptions for a cleaner UI.
  * Data is loaded via the show ID from the URL.
  */
 export default function ShowDetailPage() {
   // Get podcast ID from URL
-  const { id } = useParams();
+  const { id } = useParams();// Get show ID from route like /show/:id
+   // Component state
   const [show, setShow] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [expandedSeasonIndex, setExpandedSeasonIndex] = useState(null);
 
+  
+  // Toggle logic for expanding/collapsing season details
   const toggleSeason = (index) => {
   setExpandedSeasonIndex((prevIndex) => (prevIndex === index ? null : index));
 };
-
+ // Fetch show data by ID when component mounts
   useEffect(() => {
     fetchShowById(id, setShow, setError, setLoading);
   }, [id]);
 
+  
+  // Debugging utility – exposes seasons globally and logs fetched show
   useEffect(() => {
   if (show) {
     console.log("Show Data:", show);
@@ -35,16 +50,18 @@ export default function ShowDetailPage() {
   }
 }, [show]);
 
+ // Handle loading and error states
   if (loading) return <p>Loading show details...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!show) return <p>Podcast not found.</p>;
 
   // Clean up genre list
+    // Filter out generic tags like "All" or "Featured"
   const filteredGenres = (show.genres || []).filter(
     (genre) => genre !== "All" && genre !== "Featured"
   );
 
-  // Handle both string and numeric genres
+  // Handle genre formatting (can be numeric or string)
   const getGenreTitle = (genre) => {
     if (typeof genre === "number") return genreMap[genre] || "Unknown";
     if (typeof genre === "string") return genre;
@@ -53,10 +70,12 @@ export default function ShowDetailPage() {
 
   return (
     <div className="showDetailContainer">
+         {/* Header section with show cover image and metadata */}
       <div className="headerSection">
         <img src={show.image} alt={show.title} className="coverImage" />
 
         <div className="meta">
+             {/* Show title and description */}
           <h1>{show.title}</h1>
           <p>{show.description}</p>
 
@@ -75,8 +94,10 @@ export default function ShowDetailPage() {
             </div>
           )}*/}
 
-          {/* GENRES + LAST UPDATED */}
+          
+        {/* GENRES and LAST UPDATED section */}
 <div className="info-row">
+      {/* Genres block (left aligned) */}
   <div className="info-col">
     <strong>GENRES</strong>
     <div className="genre-tags">
@@ -91,7 +112,7 @@ export default function ShowDetailPage() {
       )}
     </div>
   </div>
-
+     {/* Last updated block (right aligned) */}
   <div className="info-col align-right">
     <strong>LAST UPDATED</strong>
     <p>{formatDate(show.updated)}</p>
@@ -122,11 +143,12 @@ export default function ShowDetailPage() {
 
     {/* TOTAL SEASONS + TOTAL EPISODES */}
 <div className="info-row">
+    {/* Total seasons */}
   <div className="info-col">
     <strong>TOTAL SEASONS</strong>
     <p>{show.seasons?.length || 0} Seasons</p>
   </div>
-
+ {/* Total episodes across all seasons */}
   <div className="info-col align-right">
     <strong>TOTAL EPISODES</strong>
     <p>
@@ -140,26 +162,31 @@ export default function ShowDetailPage() {
     </p>
   </div>
 </div>
+</div>
+</div>
 
-
-        </div>
-      </div>
-
+          {/* Seasons section */}
       <div className="seasonsSection">
         <h2>Current Season</h2>
+
+         {/* Check if any seasons are available */}
         {show.seasons?.length > 0 ? (
           show.seasons.map((season, index) => (
               
             <div key={index} className="seasonBlock">
+                {/* Clickable season header to toggle visibility of episode list */}
               <div className="seasonHeader"
                onClick={() => toggleSeason(index)} //line to toggle
                style={{ cursor: "pointer" }}       //Makes it look clickable
         >
+                  {/* Season image fallback to show image */}
                 <img
                   src={season.image || show.image}
                   alt={`Season ${index + 1} cover`}
                   className="seasonCover"
                 />
+
+                  {/* Season metadata */}
                 <div className="seasonInfo">
                   <h3>
                     Season {index + 1}: {season.title || "Untitled Season"}
@@ -171,6 +198,8 @@ export default function ShowDetailPage() {
                       ? new Date(season.episodes[0].date).getFullYear()
                       : "Unknown"}
                   </p>*/}
+
+                  {/* Episode count and first episode release year if available */}
                   <p className="seasonMeta">
   {season.episodes?.length ?? 0} episodes
   {season.episodes?.[0]?.date && (
@@ -184,19 +213,24 @@ export default function ShowDetailPage() {
                 </div>
               </div>
 
-              {/* Episodes List */}
+            
+               {/* Episodes list toggle — only show if this season is expanded */}
               {expandedSeasonIndex === index && (
               <ul className="episodeList">
+
+                 {/* Render each episode */}
                 {season.episodes?.length > 0 ? (
                   season.episodes.map((ep, epIndex) => (
                     <li key={epIndex} className="episodeItem">
                         
                         {/* Season Image */}
+                    
         <img
           src={season.image || show.image}
           alt={`Season ${index + 1} cover`}
           style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "6px" }}
         />
+          {/* Episode details */}
         <div className="episodeDetails">
                       <h4>
                         Episode {epIndex + 1}: {ep.title || "Untitled Episode"}

@@ -51,8 +51,8 @@ export function PodcastProvider({ children,}) {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const [loading, setLoading] = useState(false); // <-- add here
-  const [error, setError] = useState(null);      // <-- add here
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(null);      
 
    useEffect(() => {
     async function load() {
@@ -177,16 +177,15 @@ const paged = React.useMemo(() =>
     allPodcastsCount: filtered.length,
   };
 
-  //if (!initialPodcasts.length) {
- // return <div>Loading podcasts...</div>;
-//}
+  
 
+//Graceful handling of API states
  if (loading) {
-    return <div>Loading podcasts...</div>; // <-- show loading UI
+    return <div>Loading podcasts...</div>; //show loading UI
   }
 
   if (error) {
-    return <div>Error loading podcasts: {error}</div>; // <-- show error UI
+    return <div>Error loading podcasts: {error}</div>; // show error UI
   }
 
   return (
