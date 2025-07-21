@@ -5,6 +5,7 @@ import { formatDate } from "../utils/formatDate";
 import "../index.css"; 
 import { genreMap } from "../utils/genreMap";
 import { truncateText } from "../utils/truncateText";
+import AudioPlayer from "../components/AudioPlayer";
 
 
 /**
@@ -172,6 +173,7 @@ export default function ShowDetailPage() {
          {/* Check if any seasons are available */}
         {show.seasons?.length > 0 ? (
           show.seasons.map((season, index) => (
+
               
             <div key={index} className="seasonBlock">
                 {/* Clickable season header to toggle visibility of episode list */}
@@ -220,8 +222,11 @@ export default function ShowDetailPage() {
 
                  {/* Render each episode */}
                 {season.episodes?.length > 0 ? (
-                  season.episodes.map((ep, epIndex) => (
+                  season.episodes.map((ep, epIndex) => {
+                      console.log("Episode file:", ep.file);
+                      return(
                     <li key={epIndex} className="episodeItem">
+
                         
                         {/* Season Image */}
                     
@@ -235,15 +240,19 @@ export default function ShowDetailPage() {
                       <h4>
                         Episode {epIndex + 1}: {ep.title || "Untitled Episode"}
                       </h4>
+                      <AudioPlayer src={ep.file} />
                       <p>{truncateText(ep.description || "No description available.",100)}</p>
                       <span className="episodeMeta">
                         {ep.duration && ep.duration}
                         {ep.duration && ep.date && " · "}
                         {ep.date && formatDate(ep.date)}
                       </span>
-                      </div>
+                        {/* Audio player */}
+  </div>
+                      
                     </li>
-                  ))
+                  );
+                })
                 ) : (
                   <li>No episodes in this season.</li>
                 )}
