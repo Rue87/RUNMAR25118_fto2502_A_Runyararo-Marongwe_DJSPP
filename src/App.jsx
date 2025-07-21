@@ -11,6 +11,9 @@ import Pagination from "./components/Pagination";
 import styles from "./App.module.css";
 import ShowDetailPage from "./pages/ShowDetailPage";
 import { Routes, Route } from "react-router-dom";
+//import AudioPlayer from "./components/AudioPlayer";
+import AudioPlayerBar from "./components/AudioPlayerBar";
+import { AudioProvider } from './context/AudioContext'; 
 
 /**
  * Root component of the Podcast Explorer app.
@@ -46,7 +49,8 @@ useEffect(() => {
   }
 }, [podcasts]);
   return (
-    <>
+    <AudioProvider>
+    
       <Header />
 
       <PodcastProvider initialPodcasts={podcasts}>
@@ -120,7 +124,9 @@ useEffect(() => {
             </>
           )}
         </main>*/}
-      </PodcastProvider>
-    </>
+        <AudioPlayerBar />
+        </PodcastProvider>
+          </AudioProvider>
+    
   );
 }

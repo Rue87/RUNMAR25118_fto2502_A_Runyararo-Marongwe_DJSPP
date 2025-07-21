@@ -1,33 +1,79 @@
-import React from "react";// Import React to define the functional component
+{/*import React, { useContext } from "react";
+import { AudioContext } from "../context/AudioContext";
+import "./AudioPlayer.css";
 
-/**
- * AudioPlayer Component
- * Plays a podcast episode using HTML5 audio.
- * Falls back to placeholder audio if no valid episode file is available.
- *
- * @param {Object} props
- * @param {string} props.src - URL of the audio file to play.
- * @returns JSX.Element
- */
-const AudioPlayer = ({ src }) => {
-     // Check if the provided src is the default placeholder audio
-  const isPlaceholder =
-    src === "https://podcast-api.netlify.app/placeholder-audio.mp3";
+
+
+const AudioPlayer = () => {
+  const {
+    audioRef,
+    isPlaying,
+    togglePlayPause,
+    currentEpisode,
+    currentTime,
+    duration,
+    handleTimeUpdate,
+    handleVolumeChange,
+  } = useContext(AudioContext);
+
+  if (!currentEpisode) return null;
 
   return (
     <div className="audioPlayer">
-         {/* HTML5 audio element with browser-native controls */}
-      <audio controls>
-        <source src={src} type="audio/mpeg" />
-         {/* Fallback text if audio element isn't supported */}
-        Your browser does not support the audio element.
-      </audio>
-       {/* Optional message shown when using the placeholder audio */}
-      {isPlaceholder && (
-        <p className="note">This is a sample placeholder audio.</p>
-      )}
+      {/* Left: Cover Art + Titles */}
+    {/*<div className="audioLeft">
+        <img
+          src={currentEpisode.image || "/default-cover.jpg"}
+          alt="cover"
+          className="coverArt"
+        />
+        <div className="titles">
+          <div className="episodeTitle">{currentEpisode.title}</div>
+          <div className="podcastTitle">{currentEpisode.podcastTitle}</div>
+        </div>
+      </div>
+
+      {/* Center: Play + Progress + Time */}
+     {/* <div className="audioCenter">
+        <button className="playBtn" onClick={togglePlayPause}>
+          {isPlaying ? "⏸" : "▶️"}
+        </button>
+        <div className="progressWrapper">
+          <span className="time">{formatTime(currentTime)}</span>
+          <input
+            type="range"
+            min={0}
+            max={duration || 0}
+            value={currentTime}
+            onChange={handleTimeUpdate}
+            className="progressBar"
+          />
+          <span className="time">{formatTime(duration)}</span>
+        </div>
+      </div>
+
+      {/* Right: Volume */}
+    {/* <div className="audioRight">
+        <span className="speakerIcon">🔊</span>
+        <input
+          type="range"
+          min={0}
+          max={1}
+          step={0.01}
+          onChange={handleVolumeChange}
+        />
+      </div>
+
+      <audio ref={audioRef} src={currentEpisode.file} />
     </div>
   );
 };
 
-export default AudioPlayer;// Export component for use in other parts of the app
+{/*function formatTime(sec) {
+  if (isNaN(sec)) return "0:00";
+  const minutes = Math.floor(sec / 60);
+  const seconds = Math.floor(sec % 60);
+  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+}
+
+//export default AudioPlayer;*/}

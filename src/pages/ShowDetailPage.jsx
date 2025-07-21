@@ -5,7 +5,9 @@ import { formatDate } from "../utils/formatDate";
 import "../index.css"; 
 import { genreMap } from "../utils/genreMap";
 import { truncateText } from "../utils/truncateText";
-import AudioPlayer from "../components/AudioPlayer";
+//import AudioPlayer from "../components/AudioPlayer";
+import { useAudio } from "../context/AudioContext"; //Import the hook
+
 
 
 /**
@@ -22,8 +24,12 @@ import AudioPlayer from "../components/AudioPlayer";
  * - Remove fallback "Unknown" if metadata is missing.
  * - Truncate long episode descriptions for a cleaner UI.
  * Data is loaded via the show ID from the URL.
+ * Uses the `useAudio` hook to manage audio playback.
+ * 
  */
+
 export default function ShowDetailPage() {
+  const { playEpisode } = useAudio(); // 💡 useAudio gives access to playback controller
   // Get podcast ID from URL
   const { id } = useParams();// Get show ID from route like /show/:id
    // Component state
@@ -237,17 +243,50 @@ export default function ShowDetailPage() {
         />
           {/* Episode details */}
         <div className="episodeDetails">
+          {/* 
+  Episode Title 
+  - Displays episode index and title.
+  - Defaults to "Untitled Episode" if no title exists.
+*/}
                       <h4>
                         Episode {epIndex + 1}: {ep.title || "Untitled Episode"}
                       </h4>
-                      <AudioPlayer src={ep.file} />
+                      {/*
+  Play Button
+  - Calls the global `playEpisode(ep)` function from AudioContext.
+  - Triggers playback in the persistent audio player.
+*/}
+                      {/*<button onClick={() => playEpisode(ep)} className="playBtn"
+                        disabled={!ep.file}>
+                      ▶️ Play Episode
+                       </button>*/}
+                       <div
+  onClick={() => playEpisode(ep)}
+  className="playBtn"
+  style={{ cursor: "pointer", fontWeight: "bold", marginBottom: "6px" }}
+>
+  ▶️ Play Episode
+</div>
+
+                       {/*
+  Episode Description
+  - Truncates long descriptions to 100 characters.
+  - Falls back to placeholder text if missing.
+*/}
+
                       <p>{truncateText(ep.description || "No description available.",100)}</p>
+                      
+{/*
+  Episode Meta Info
+  - Displays duration and release date if available.
+  - Separates values with a dot if both exist.
+*/}
                       <span className="episodeMeta">
                         {ep.duration && ep.duration}
                         {ep.duration && ep.date && " · "}
                         {ep.date && formatDate(ep.date)}
                       </span>
-                        {/* Audio player */}
+                        
   </div>
                       
                     </li>
