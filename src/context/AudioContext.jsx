@@ -2,7 +2,8 @@ import React, {
   createContext,
   useState,
   useRef,
-  useContext
+  useContext,
+  useEffect
 } from "react";
 
 /**
@@ -34,6 +35,23 @@ export function AudioProvider({ children }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playlist, setPlaylist] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
+
+  
+  // 👇 ADD THIS useEffect block inside your provider
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (isPlaying) {
+        e.preventDefault();
+        e.returnValue = ""; // Required for Chrome and modern browsers
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isPlaying]); // Dependency to re-run only if isPlaying changes
+
 
 
   /**
