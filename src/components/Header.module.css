@@ -1,7 +1,27 @@
 .appHeader {
   display: flex;
+  align-items: center ;
   justify-content: space-between;
   padding: 1rem;
   background: white;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+.navLinks {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.1rem;
+}
+.appHeader h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+.navLinks a {
+  text-decoration: none;
+  color: #0077cc;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.navLinks a:hover {
+  text-decoration: underline;
 }

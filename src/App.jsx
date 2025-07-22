@@ -14,6 +14,7 @@ import { Routes, Route } from "react-router-dom";
 //import AudioPlayer from "./components/AudioPlayer";
 import AudioPlayerBar from "./components/AudioPlayerBar";
 import { AudioProvider } from './context/AudioContext'; 
+import FavouritesPage from "./pages/FavouritesPage"; 
 
 /**
  * Root component of the Podcast Explorer app.
@@ -87,7 +88,9 @@ useEffect(() => {
                 }
               />
               <Route path="/shows/:id" element={<ShowDetailPage />} />
+               <Route path="/favourites" element={<FavouritesPage />} /> 
             </Routes>
+
           )}
         </main>
       
