@@ -21,8 +21,17 @@ const AudioPlayerBar = () => {
     togglePlayPause,
     playNext,
     playPrevious,  // Function to toggle play/pause state
-    audioRef          // Ref to the underlying <audio> element
+    audioRef ,
+    increaseVolume,
+    decreaseVolume ,
+    currentIndex ,
+    playlist
+            // Ref to the underlying <audio> element
   } = useAudio();
+
+  console.log("AudioPlayerBar playlist:", playlist);
+  console.log("AudioPlayerBar currentIndex:", currentIndex);
+
 
   const [progress, setProgress] = useState(0);     // Current time in seconds
   const [duration, setDuration] = useState(0);     // Total duration of the audio
@@ -72,23 +81,47 @@ const AudioPlayerBar = () => {
     <div className="audio-player-bar">
       {/* Left section: Episode art and titles */}
       <div className="episode-info">
-        <img src="/cover.jpg" alt="Episode Art" className="cover" />
+        {/*<img src="/cover.jpg" alt="Episode Art" className="cover" />
         <div>
           <h4>{currentEpisode.title}</h4>
           <p>Podcast Title</p>
         </div>
-      </div>
+      </div>*/}
+      {/*<img src={currentEpisode.image || "/fallback.jpg"} 
+      alt={currentEpisode.title}
+       className="cover" />*/}
+       <div>
+{/*<h4>{currentEpisode.title || "Untitled Episode"}</h4>*/}
+<h4>{currentEpisode?.title || "No episode title"}</h4>
+{/*<p>{currentEpisode.podcastTitle || "Unknown Podcast"}</p>*/}
+            </div>
+            </div>
 
       {/* Middle section: Play/Pause and progress bar */}
       <div className="player-controls">
         <div className="player-controls-buttons">
-         <button onClick={playPrevious} className="prevBtn">⏮</button>
+         <button 
+         onClick={playPrevious} 
+         className="prevBtn"
+         disabled={!playlist || currentIndex === 0}>
+            ⏮
+            </button>
 
         <button onClick={togglePlayPause}>
           {isPlaying ? "⏸️" : "▶️"}
         </button>
 
-         <button onClick={playNext} className="nextBtn">⏭</button>
+    {/*<button onClick={playNext} className="nextBtn">⏭</button>*/}
+         <button 
+         onClick={() => { 
+            console.log("next clicked");
+             playNext(); 
+            }} 
+            className="nextBtn"
+            disabled={!playlist || currentIndex === playlist.length - 1}
+            >
+            ⏭
+            </button>
        </div>
         <div className="progress-container">
           <span>{formatTime(progress)}</span>
@@ -96,6 +129,7 @@ const AudioPlayerBar = () => {
             type="range"
             value={progress}
             max={duration}
+            step="0.1"
             onChange={(e) => {
               const newTime = Number(e.target.value);
               audioRef.current.currentTime = newTime;
@@ -106,10 +140,28 @@ const AudioPlayerBar = () => {
         </div>
       </div>
 
-      {/* Right section: Volume icon (add slider later if needed) */}
-      <div className="volume">
-        🔊
-      </div>
+      {/* Right section */}
+      <div className="right-controls">
+        <button
+    className="volume-down"
+    onClick={decreaseVolume}
+    aria-label="Decrease volume"
+    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}
+  >
+    🔉
+  </button>
+
+
+  <button className="volume-icon"
+    onClick={increaseVolume}
+    aria-label="Increase volume"
+     style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem' }}
+>
+    🔊
+</button>
+  <button className="menu-icon">⋮</button>
+</div>
+
     </div>
   );
 };

@@ -49,13 +49,23 @@
   cursor: pointer;
   accent-color: #0dbd8b;
 }
-
-.volume-icon {
+.right-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: auto;
+}
+.volume-icon,
+.menu-icon {
   background: none;
   border: none;
   font-size: 1.2rem;
   color: white;
   cursor: pointer;
+}
+
+.menu-icon:hover {
+  color: #0dbd8b;
 }
 .buttons button {
   font-size: 1.5rem;

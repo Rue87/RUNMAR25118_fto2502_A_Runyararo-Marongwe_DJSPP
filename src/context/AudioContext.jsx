@@ -28,10 +28,13 @@ export function AudioProvider({ children }) {
   const audioRef = useRef(new Audio());
 
   // The currently playing episode
-  const [currentEpisode, setCurrentEpisode] = useState(null);
+  const [currentEpisode, setCurrentEpisode] = useState(null);// This holds the episode
 
   // Whether audio is currently playing
   const [isPlaying, setIsPlaying] = useState(false);
+  const [playlist, setPlaylist] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(-1);
+
 
   /**
    * Play a given episode.
@@ -39,7 +42,7 @@ export function AudioProvider({ children }) {
    *
    * @param {Episode} episode - The episode object to play
    */
-  const playEpisode = (episode) => {
+  {/*const playEpisode = (episode) => {
     if (!episode?.file) return; // Guard clause if no valid episode
 
     // If it's a different episode, load new source and play
@@ -53,7 +56,32 @@ export function AudioProvider({ children }) {
       audioRef.current.play();
       setIsPlaying(true);
     }
-  };
+  };*/}
+  const playEpisode = (episode, playlistArray = [], index = -1) => {
+  if (!audioRef.current) return;
+
+  if (currentEpisode?.file !== episode.file) {
+    // It's a new episode
+    audioRef.current.src = episode.file;
+    audioRef.current.play();
+    setCurrentEpisode(episode);
+    setIsPlaying(true);
+
+    if (playlistArray.length > 0) {
+      setPlaylist(playlistArray);
+      setCurrentIndex(index);
+    }
+
+    console.log("🎧 Playing new episode:", episode.title);
+  } else {
+    // Same episode, resume play
+    audioRef.current.play();
+    setIsPlaying(true);
+
+    console.log("▶️ Resuming episode:", episode.title);
+  }
+};
+
 
   /**
    * Pause the currently playing audio
@@ -75,6 +103,48 @@ export function AudioProvider({ children }) {
     }
   };
 
+  //  Increase volume in steps (up to 1.0)
+  const increaseVolume = () => {
+    const newVolume = Math.min(audioRef.current.volume + 0.1, 1);
+    audioRef.current.volume = newVolume;
+    console.log("Volume increased to:", newVolume.toFixed(2));
+  };
+
+   //  Decrease volume in steps (down to 0.0)
+  const decreaseVolume = () => {
+    const newVolume = Math.max(audioRef.current.volume - 0.1, 0);
+    audioRef.current.volume = newVolume;
+    console.log("Volume decreased to:", newVolume.toFixed(2));
+  };
+
+    const playNext = () => {
+    console.log("playNext called", { currentIndex, playlistLength: playlist.length });
+    if (playlist.length === 0 || currentIndex < 0) return;
+
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < playlist.length) {
+      const nextEpisode = playlist[nextIndex];
+      setCurrentIndex(nextIndex);
+      playEpisode(nextEpisode, playlist, nextIndex);
+    } else {
+      console.log(" End of playlist.");
+    }
+  };
+
+  const playPrevious = () => {
+     console.log("playPrevious called", { currentIndex, playlistLength: playlist.length });
+
+    if (playlist.length === 0 || currentIndex <= 0) 
+         console.log("No playlist or at start, skipping playPrevious");
+        return;
+
+    const prevIndex = currentIndex - 1;
+    const prevEpisode = playlist[prevIndex];
+     console.log("Playing previous episode:", prevEpisode.title, "at index", prevIndex);
+    setCurrentIndex(prevIndex);
+    playEpisode(prevEpisode, playlist, prevIndex);
+  };
+
   // Provide all audio-related state and functions to the rest of the app
   return (
     <AudioContext.Provider
@@ -84,7 +154,13 @@ export function AudioProvider({ children }) {
         playEpisode,
         pause,
         togglePlayPause,
-        audioRef
+        audioRef,
+        increaseVolume, 
+        decreaseVolume,
+        playNext,
+        playPrevious,
+        playlist,
+        currentIndex
       }}
     >
       {children}

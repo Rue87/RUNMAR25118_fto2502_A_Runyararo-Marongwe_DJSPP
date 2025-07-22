@@ -39,21 +39,18 @@ export default function App() {
   load();
 }, []);
 
-
-  //useEffect(() => {
-  //  fetchPodcasts(setPodcasts, setError, setLoading);
-  //}, []);
 useEffect(() => {
   if (podcasts.length) {
     console.log("Podcasts updated:", podcasts);
   }
 }, [podcasts]);
   return (
-    <AudioProvider>
     
-      <Header />
-
+    
+      
+<>
       <PodcastProvider initialPodcasts={podcasts}>
+        <Header />
  <main className={styles.main}>
           {/* Show loading spinner */}
           {loading && (
@@ -93,40 +90,10 @@ useEffect(() => {
             </Routes>
           )}
         </main>
-        
-
-        {/*<main className={styles.main}>
-          <section className={styles.controls}>
-            <SearchBar />
-            <GenreFilter genres={genres} />
-            <SortSelect />
-          </section>
-
-          {loading && (
-            <div className={styles.messageContainer}>
-              <div className={styles.spinner}></div>
-              <p>Loading podcasts...</p>
-            </div>
-          )}
-
-          {error && (
-            <div className={styles.message}>
-              <div className={styles.error}>
-                Error occurred while fetching podcasts: {error}
-              </div>
-            </div>
-          )}
-
-          {!loading && !error && (
-            <>
-              <PodcastGrid genres={genres} />
-              <Pagination />
-            </>
-          )}
-        </main>*/}
+      
         <AudioPlayerBar />
         </PodcastProvider>
-          </AudioProvider>
+          </>
     
   );
 }

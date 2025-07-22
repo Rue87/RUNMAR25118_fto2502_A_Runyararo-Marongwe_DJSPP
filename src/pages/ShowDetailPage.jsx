@@ -86,23 +86,7 @@ export default function ShowDetailPage() {
           <h1>{show.title}</h1>
           <p>{show.description}</p>
 
-       {/*  {filteredGenres.length > 0 ? (
-        <div className="genre-tags">
-          <strong>Genres:</strong>{" "}
-          {filteredGenres.map((genre, index) => (
-            <span key={index} className="genre-tag">
-              {getGenreTitle(genre)}
-            </span>
-              ))}
-            </div>
-          ) : (
-            <div>
-              <strong>Genres:</strong> <span className="genre-tag">Unknown</span>
-            </div>
-          )}*/}
-
-          
-        {/* GENRES and LAST UPDATED section */}
+ {/* GENRES and LAST UPDATED section */}
 <div className="info-row">
       {/* Genres block (left aligned) */}
   <div className="info-col">
@@ -126,29 +110,7 @@ export default function ShowDetailPage() {
   </div>
 </div>
 
-
-        {/*  <div className="metadataRow">
-            <div>
-              <strong>Total Seasons:</strong> {show.seasons?.length ?? 0}
-            </div>
-
-            <div className="updatedDate">
-              <strong>Last Updated</strong>
-              <span>{formatDate(show.updated)}</span>
-            </div>
-
-            <div>
-              <strong>Total Episodes:</strong>{" "}
-              {show.seasons
-                ? show.seasons.reduce(
-                    (acc, season) => acc + (season.episodes?.length ?? 0),
-                    0
-                  )
-                : 0}
-            </div>
-          </div>*/}
-
-    {/* TOTAL SEASONS + TOTAL EPISODES */}
+{/* TOTAL SEASONS + TOTAL EPISODES */}
 <div className="info-row">
     {/* Total seasons */}
   <div className="info-col">
@@ -229,7 +191,8 @@ export default function ShowDetailPage() {
                  {/* Render each episode */}
                 {season.episodes?.length > 0 ? (
                   season.episodes.map((ep, epIndex) => {
-                      console.log("Episode file:", ep.file);
+                      {/*console.log("Episode file:", ep.file);*/}
+                      console.log("Playing episode:", ep.title, "file:", ep.file);
                       return(
                     <li key={epIndex} className="episodeItem">
 
@@ -260,13 +223,38 @@ export default function ShowDetailPage() {
                         disabled={!ep.file}>
                       ▶️ Play Episode
                        </button>*/}
-                       <div
-  onClick={() => playEpisode(ep)}
+                      {/* <div
+  onClick={() =>
+  playEpisode({
+    title: ep.title || `Episode ${epIndex + 1}`,
+    file: ep.file,
+    description: ep.description || "No description available.",
+  })
+}
+  className="playBtn"
+  style={{ cursor: "pointer", fontWeight: "bold", marginBottom: "6px" }}
+>
+  ▶️ Play Episode
+</div>*/}
+<div
+  onClick={() =>
+    playEpisode(
+      {
+        title: ep.title || `Episode ${epIndex + 1}`,
+        file: ep.file,
+        description: ep.description || "No description available.",
+      },
+      //seasonEpisodesArray,
+      season.episodes,  // the full episode array as playlist
+      epIndex               // the current episode's index
+    )
+  }
   className="playBtn"
   style={{ cursor: "pointer", fontWeight: "bold", marginBottom: "6px" }}
 >
   ▶️ Play Episode
 </div>
+
 
                        {/*
   Episode Description
