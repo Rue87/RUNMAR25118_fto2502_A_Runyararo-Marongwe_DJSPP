@@ -5,6 +5,8 @@ import React, {
   useContext,
   useEffect
 } from "react";
+import { mockFavorites } from "../utils/mockFavorites"; 
+
 
 /**
  * @typedef {Object} Episode
@@ -35,6 +37,46 @@ export function AudioProvider({ children }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playlist, setPlaylist] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
+
+   // Initialize favourites from localStorage or fallback to mockFavorites
+  const [favourites, setFavourites] = useState(() => {
+    const stored = localStorage.getItem("favourites");
+    return stored ? JSON.parse(stored) :  mockFavorites;
+  });
+
+  /**
+ * Toggle episode in favourites.
+ * - If episode is already in favourites, remove it.
+ * - Otherwise, add it to favourites.
+ * -Updates localStorage after every change.
+ */
+
+ {/* const toggleFavourite = (episode) => {
+  setFavourites(prev => {
+    const isFav = prev.some(f => f.file === episode.file);
+    const updated = isFav
+      ? prev.filter(f => f.file !== episode.file)
+      : [...prev, episode];
+
+    localStorage.setItem("favourites", JSON.stringify(updated));
+    return updated;
+  });
+};*/}
+const toggleFavourite = (episode) => {
+  setFavourites(prev => {
+    const isFav = prev.some(
+      f => f.title === episode.title && f.description === episode.description
+    );
+
+    const updated = isFav
+      ? prev.filter(f => !(f.title === episode.title && f.description === episode.description))
+      : [...prev, episode];
+
+    localStorage.setItem("favourites", JSON.stringify(updated));
+    return updated;
+  });
+};
+
 
   
   // 👇 ADD THIS useEffect block inside your provider
@@ -178,7 +220,9 @@ export function AudioProvider({ children }) {
         playNext,
         playPrevious,
         playlist,
-        currentIndex
+        currentIndex,
+        favourites,
+        toggleFavourite
       }}
     >
       {children}

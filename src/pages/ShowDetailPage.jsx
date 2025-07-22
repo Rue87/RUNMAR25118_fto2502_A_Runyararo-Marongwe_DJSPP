@@ -7,6 +7,7 @@ import { genreMap } from "../utils/genreMap";
 import { truncateText } from "../utils/truncateText";
 //import AudioPlayer from "../components/AudioPlayer";
 import { useAudio } from "../context/AudioContext"; //Import the hook
+import FavoriteHeart from "../components/FavoriteHeart"; 
 
 
 
@@ -29,7 +30,7 @@ import { useAudio } from "../context/AudioContext"; //Import the hook
  */
 
 export default function ShowDetailPage() {
-  const { playEpisode } = useAudio(); // 💡 useAudio gives access to playback controller
+  const { playEpisode, favourites, toggleFavourite } = useAudio(); // 💡 useAudio gives access to playback controller
   // Get podcast ID from URL
   const { id } = useParams();// Get show ID from route like /show/:id
    // Component state
@@ -191,10 +192,9 @@ export default function ShowDetailPage() {
                  {/* Render each episode */}
                 {season.episodes?.length > 0 ? (
                   season.episodes.map((ep, epIndex) => {
-                      {/*console.log("Episode file:", ep.file);*/}
-                      console.log("Playing episode:", ep.title, "file:", ep.file);
+                     const isFavorite = favourites.some(fav => fav.file === ep.file); // Per episode chec
                       return(
-                    <li key={epIndex} className="episodeItem">
+                    <li key={ep.file || epIndex} className="episodeItem">
 
                         
                         {/* Season Image */}
@@ -211,31 +211,16 @@ export default function ShowDetailPage() {
   - Displays episode index and title.
   - Defaults to "Untitled Episode" if no title exists.
 */}
-                      <h4>
+                      <h4 style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         Episode {epIndex + 1}: {ep.title || "Untitled Episode"}
+                         <FavoriteHeart episode={ep} isFavorite={isFavorite} />
                       </h4>
+
                       {/*
   Play Button
   - Calls the global `playEpisode(ep)` function from AudioContext.
   - Triggers playback in the persistent audio player.
 */}
-                      {/*<button onClick={() => playEpisode(ep)} className="playBtn"
-                        disabled={!ep.file}>
-                      ▶️ Play Episode
-                       </button>*/}
-                      {/* <div
-  onClick={() =>
-  playEpisode({
-    title: ep.title || `Episode ${epIndex + 1}`,
-    file: ep.file,
-    description: ep.description || "No description available.",
-  })
-}
-  className="playBtn"
-  style={{ cursor: "pointer", fontWeight: "bold", marginBottom: "6px" }}
->
-  ▶️ Play Episode
-</div>*/}
 <div
   onClick={() =>
     playEpisode(
