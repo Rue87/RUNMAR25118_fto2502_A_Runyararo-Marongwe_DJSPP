@@ -26,6 +26,7 @@ const AudioContext = createContext();
  * @param {React.ReactNode} props.children - The components wrapped by this provider
  * @returns {JSX.Element}
  */
+// AudioProvider component wraps around the app and provides context values
 export function AudioProvider({ children }) {
   // Ref to the HTML5 audio element
   const audioRef = useRef(new Audio());
@@ -40,30 +41,23 @@ export function AudioProvider({ children }) {
 
    // Initialize favourites from localStorage or fallback to mockFavorites
   const [favourites, setFavourites] = useState(() => {
+    // Load from localStorage if available
     const stored = localStorage.getItem("favourites");
+     // If found, parse and use it, otherwise use empty array
     return stored ? JSON.parse(stored) :  mockFavorites;
   });
 
-  /**
- * Toggle episode in favourites.
- * - If episode is already in favourites, remove it.
- * - Otherwise, add it to favourites.
- * -Updates localStorage after every change.
- */
+   //  Sync favourites to localStorage every time it changes
+  useEffect(() => {
+    // Save the latest favourites to localStorage as a string
+    localStorage.setItem("favourites", JSON.stringify(favourites));
+  }, [favourites]); // This runs every time 'favourites' changes
 
- {/* const toggleFavourite = (episode) => {
-  setFavourites(prev => {
-    const isFav = prev.some(f => f.file === episode.file);
-    const updated = isFav
-      ? prev.filter(f => f.file !== episode.file)
-      : [...prev, episode];
 
-    localStorage.setItem("favourites", JSON.stringify(updated));
-    return updated;
-  });
-};*/}
+  // Toggle favourite: Add if not present, remove if already favourited
 const toggleFavourite = (episode) => {
   setFavourites(prev => {
+    // Check if episode is already in favourites (based on title & description)
     const isFav = prev.some(
       f => f.title === episode.title && f.description === episode.description
     );
@@ -72,14 +66,11 @@ const toggleFavourite = (episode) => {
       ? prev.filter(f => !(f.title === episode.title && f.description === episode.description))
       : [...prev, episode];
 
-    localStorage.setItem("favourites", JSON.stringify(updated));
+   // localStorage.setItem("favourites", JSON.stringify(updated));
     return updated;
   });
 };
-
-
-  
-  // 👇 ADD THIS useEffect block inside your provider
+// 👇 ADD THIS useEffect block inside your provider
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (isPlaying) {
@@ -102,21 +93,7 @@ const toggleFavourite = (episode) => {
    *
    * @param {Episode} episode - The episode object to play
    */
-  {/*const playEpisode = (episode) => {
-    if (!episode?.file) return; // Guard clause if no valid episode
-
-    // If it's a different episode, load new source and play
-    if (currentEpisode?.file !== episode.file) {
-      setCurrentEpisode(episode);
-      audioRef.current.src = episode.file;
-      audioRef.current.play();
-      setIsPlaying(true);
-    } else {
-      // Same episode, just resume
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
-  };*/}
+ 
   const playEpisode = (episode, playlistArray = [], index = -1) => {
   if (!audioRef.current) return;
 
@@ -142,8 +119,7 @@ const toggleFavourite = (episode) => {
   }
 };
 
-
-  /**
+/**
    * Pause the currently playing audio
    */
   const pause = () => {
@@ -194,10 +170,10 @@ const toggleFavourite = (episode) => {
   const playPrevious = () => {
      console.log("playPrevious called", { currentIndex, playlistLength: playlist.length });
 
-    if (playlist.length === 0 || currentIndex <= 0) 
+    if (playlist.length === 0 || currentIndex <= 0) {
          console.log("No playlist or at start, skipping playPrevious");
         return;
-
+    }
     const prevIndex = currentIndex - 1;
     const prevEpisode = playlist[prevIndex];
      console.log("Playing previous episode:", prevEpisode.title, "at index", prevIndex);
