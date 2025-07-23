@@ -14,7 +14,8 @@ import { Routes, Route } from "react-router-dom";
 //import AudioPlayer from "./components/AudioPlayer";
 import AudioPlayerBar from "./components/AudioPlayerBar";
 import { AudioProvider } from './context/AudioContext'; 
-import FavouritesPage from "./pages/FavouritesPage"; 
+import FavouritesPage from "./pages/FavouritesPage";
+import ShowCarousel from "./components/ShowCarousel";  
 
 /**
  * Root component of the Podcast Explorer app.
@@ -82,6 +83,7 @@ useEffect(() => {
                       <GenreFilter genres={genres} />
                       <SortSelect />
                     </section>
+                    <ShowCarousel shows={podcasts} />
                     <PodcastGrid />
                     <Pagination />
                   </>
