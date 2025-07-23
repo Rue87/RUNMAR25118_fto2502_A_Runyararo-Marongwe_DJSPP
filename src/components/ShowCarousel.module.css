@@ -109,3 +109,17 @@
 .cardTitle {
   margin: 0.5rem 0;
 }
+.genreTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 0.5rem;
+}
+
+.tag {
+  background-color: #8abaed;
+  color: white;
+  padding: 0.1rem 0.4rem;
+  border-radius: 10px;
+  font-size: 0.6rem;
+}

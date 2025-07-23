@@ -1,5 +1,7 @@
 import React, { useRef } from "react";
 import styles from './ShowCarousel.module.css';
+import CarouselSlide from "./CarouselSlide";
+import { genreMap } from "../utils/genreMap"; 
 
 /**
  * ShowCarousel Component
@@ -46,21 +48,24 @@ export default function ShowCarousel({ shows }) {
         ref={containerRef}
         className={`${styles.carousel} ${styles["hide-scrollbar"]}`}
       >
-        {shows.map(show => (
-          <div
-            key={show.id}
-            className={styles.carouselCard} 
-            onClick={() => alert(`Clicked on ${show.title}`)} // Replace with navigation logic
-          >
-            <img
-              src={show.image}
-              alt={show.title}
-              className={styles.cardImage} 
-            />
-            <h4 className={styles.cardTitle}>{show.title}</h4>
-          </div>
-        ))}
-      </div>
+        {shows.map(show => {
+          // Ensure show has genres and map them to names}
+        const genreNames = show.genres.map(id => genreMap[id] || "Unknown");
+  return (
+  <CarouselSlide
+    key={show.id}
+    image={show.image}
+    title={show.title}
+    genres={genreNames} // 
+    onClick={() => alert(`Clicked on ${show.title}`)} // optional
+  />
+  );
+})}
+ </div>
 
     </div>
-)}   
+      );
+}
+
+       
+    
