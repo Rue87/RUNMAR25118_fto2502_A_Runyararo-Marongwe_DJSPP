@@ -10,16 +10,20 @@
 export async function fetchShowById(id, setShow, setError, setLoading) {
 
   try {
-    setLoading(true);
+    if (setLoading) setLoading(true);
     const res = await fetch(`https://podcast-api.netlify.app/id/${id}`);
     if (!res.ok) throw new Error(`Error: ${res.status} - Show not found`);
     const data = await res.json();
      console.log("Show data fetched:", data);
-    setShow(data);
+
+    if (setShow) setShow(data);
+    return data;// So it can be used in other pages like FavouritesPage
   } catch (err) {
     console.error("Failed to fetch show:", err);
-    setError(err.message);
+
+    if (setError) setError(err.message);
+    throw err;//So error can be handled elsewhere
   } finally {
-    setLoading(false);
+    if (setLoading) setLoading(false);
   }
 }

@@ -213,7 +213,12 @@ export default function ShowDetailPage() {
 */}
                       <h4 style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         Episode {epIndex + 1}: {ep.title || "Untitled Episode"}
-                         <FavoriteHeart episode={ep} isFavorite={isFavorite} />
+                         <FavoriteHeart 
+                         episode={ep} 
+                         showTitle={show.title}
+                         seasonNumber={index + 1}
+                         episodeNumber={epIndex + 1}
+                         isFavorite={isFavorite} />
                       </h4>
 
                       {/*

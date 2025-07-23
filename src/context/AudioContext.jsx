@@ -14,6 +14,28 @@ import { mockFavorites } from "../utils/mockFavorites";
  * @property {string} file - URL to the audio file
  * @property {string} [description] - Optional description
  */
+/**
+ * @context
+ * @returns {JSX.Element} Context provider with values:
+ *
+ * currentEpisode: {Episode|null} The episode currently being played
+ * isPlaying: {boolean} Whether audio is currently playing
+ * playEpisode: {(episode: Episode) => void} Plays the given episode
+ * pause: {() => void} Pauses the current episode
+ * togglePlayPause: {() => void} Toggles between play and pause
+ * audioRef: {React.RefObject<HTMLAudioElement>} Ref to the audio element
+ * increaseVolume: {() => void} Increases the audio volume
+ * decreaseVolume: {() => void} Decreases the audio volume
+ * playNext: {() => void} Plays the next episode in the playlist
+ * playPrevious: {() => void} Plays the previous episode
+ * currentIndex: {number} Index of the currently playing episode in the playlist
+ * playlist: {Episode[]} Array of all playable episodes
+ * favourites: {Episode[]} Array of favourited episodes with addedAt metadata
+ * toggleFavourite: {(episode: Episode) => void} Adds or removes an episode from favourites
+ * recentlyFavourited: {Episode[]} Episodes favourited in the last 7 days
+ * lastAddedEpisode: {Episode|null} Most recently added favourited episode
+ */
+
 
 // Create a context to share audio state globally
 const AudioContext = createContext();
@@ -55,22 +77,60 @@ export function AudioProvider({ children }) {
 
 
   // Toggle favourite: Add if not present, remove if already favourited
-const toggleFavourite = (episode) => {
-  setFavourites(prev => {
+const toggleFavourite = (episode, showTitle = "", seasonNumber = "", episodeNumber = "") => {
+    //const isFav = prev.some(
+    setFavourites(prev =>{
+        // Check if episode is already in favourites (based on all identifying fields
+        const isFav = prev.some(
+  f =>
+    f.title === episode.title &&
+    f.description === episode.description &&
+    f.showTitle === showTitle &&
+    f.season === seasonNumber &&
+    f.episode === episodeNumber
+);
+    //setFavourites(prev => {
     // Check if episode is already in favourites (based on title & description)
-    const isFav = prev.some(
-      f => f.title === episode.title && f.description === episode.description
-    );
+    //const isFav = prev.some(
+    //  f => f.title === episode.title && f.description === episode.description
+   // );
 
-    const updated = isFav
+     if (isFav) {
+        // Remove from favourites
+      return prev.filter(
+        (f) => !(
+      f.title === episode.title &&
+      f.description === episode.description &&
+      f.showTitle === showTitle &&
+      f.season === seasonNumber &&
+      f.episode === episodeNumber
+    )
+);
+           // f.title === episode.title && f.description === episode.description)
+      
+    } else {
+         // Add to favourites with extra info
+      const enrichedEpisode = {
+        ...episode,
+        showTitle,
+        season: seasonNumber,
+        episode: episodeNumber,
+        addedAt: new Date().toISOString(),// timestamp added here
+      };
+      return [...prev, enrichedEpisode];
+    }
+  });
+};
+
+    {/*const updated = isFav
       ? prev.filter(f => !(f.title === episode.title && f.description === episode.description))
       : [...prev, episode];
 
    // localStorage.setItem("favourites", JSON.stringify(updated));
     return updated;
   });
-};
-// 👇 ADD THIS useEffect block inside your provider
+};*/}
+
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (isPlaying) {
