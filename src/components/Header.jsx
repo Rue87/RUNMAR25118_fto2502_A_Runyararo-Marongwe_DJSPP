@@ -9,18 +9,22 @@ import React, { useState, useEffect } from "react";
  */
 export default function Header() {
    const [darkMode, setDarkMode] = useState(() => {
+     // Initialize from localStorage once
     return localStorage.getItem("darkMode") === "true";
   });
 
     useEffect(() => {
-   // if (darkMode) {
-    //  document.body.classList.add("dark-mode");
-   // } else {
-    //  document.body.classList.remove("dark-mode");
-    //}
-     document.body.classList.toggle("dark-mode", darkMode);
+       // Add or remove class on body
+   document.body.classList.toggle("dark-mode", darkMode);
+    // Save preference
     localStorage.setItem("darkMode", darkMode);
   }, [darkMode]);
+
+
+  const toggleTheme = () => {
+    setDarkMode(prev => !prev);
+  };
+
   return (
     <header className={styles.appHeader}>
       <h1>🎙️ Podcast App</h1>
@@ -31,7 +35,7 @@ export default function Header() {
          <button
       aria-label="Toggle light/dark mode"
       onClick={() => setDarkMode(!darkMode)}
-      className={styles.toggleButton}  // Add a new style or reuse existing styles
+      className={styles.toggleButton}  
     >
       {darkMode ? "☀️" : "🌙"}
     </button>

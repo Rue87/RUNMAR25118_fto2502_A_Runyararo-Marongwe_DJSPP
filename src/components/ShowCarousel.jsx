@@ -8,12 +8,22 @@ import { useNavigate } from "react-router-dom";
  * ShowCarousel Component
  * Displays a horizontal sliding carousel of shows.
  *
+ * @component
  * @param {Object[]} shows - Array of show objects with at least {id, title, image} 
- */
+ * @param {string} shows[].id - Unique identifier of the show
+ * @param {string} shows[].title - Title of the show
+ * @param {string} shows[].image - Image URL of the show
+ * @param {number[]} shows[].genres - Array of genre IDs
+ * @returns {JSX.Element} A styled, scrollable carousel of show cards
+*/
 export default function ShowCarousel({ shows }) {
   const navigate = useNavigate();
   const containerRef = useRef(null);
 
+   /**
+   * Handles scrolling left in the carousel.
+   * If at the beginning, loops to the end; otherwise scrolls left by 300px.
+   */
  const scrollLeft = () => {
   const container = containerRef.current;
   if (!container) return;
@@ -26,17 +36,22 @@ export default function ShowCarousel({ shows }) {
 
   if (isAtStart) {
     console.log("Jumping LEFT to END");
+     // Loop to end
     container.scrollTo({
       left: maxScrollLeft,
       behavior: "smooth",
     });
   } else {
     console.log("Scrolling LEFT normally");
+    // Scroll normally
     container.scrollBy({ left: -300, behavior: "smooth" });
   }
 };
 
-
+ /**
+   * Handles scrolling right in the carousel.
+   * If at the end, loops to the beginning; otherwise scrolls right by 300px.
+   */
   const scrollRight = () => {
     const container = containerRef.current;
     if (!container) return;
@@ -50,14 +65,14 @@ export default function ShowCarousel({ shows }) {
         behavior: "smooth"
       });
     } else {
+      // Scroll normally
       container.scrollBy({ left: 300, behavior: "smooth" });
     }
   };
 
   return (
     <div className={styles.carouselContainer}>
-      {/* Title and Arrows Row */}
-      {/*<h2 className={styles.carouselTitle}>Recommended Shows</h2>*/}
+       {/* Scroll control buttons */}
       <div className={styles.carouselHeader}>
         <div className={styles.scrollButtons}>
           <button
@@ -78,7 +93,7 @@ export default function ShowCarousel({ shows }) {
         </div>
       </div>
 
-      {/* Carousel Slides */}
+      {/* Show cards displayed in horizontal scroll area */}
       <div
         ref={containerRef}
         className={`${styles.carousel} ${styles["hide-scrollbar"]}`}
@@ -93,8 +108,7 @@ export default function ShowCarousel({ shows }) {
               title={show.title}
               genres={genreNames}
               onClick={() => navigate(`/shows/${show.id}`)} 
-             // onClick={() => alert(`Clicked on ${show.title}`)}
-            />
+             />
           );
         })}
       </div>

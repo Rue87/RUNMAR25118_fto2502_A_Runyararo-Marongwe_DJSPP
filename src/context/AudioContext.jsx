@@ -7,37 +7,27 @@ import React, {
 } from "react";
 import { mockFavorites } from "../utils/mockFavorites"; 
 
-
+//  Define the shape of an episode
 /**
  * @typedef {Object} Episode
  * @property {string} title - Title of the episode
  * @property {string} file - URL to the audio file
  * @property {string} [description] - Optional description
  */
+
+// Context value overview for IDE hints and documentation
 /**
  * @context
  * @returns {JSX.Element} Context provider with values:
- *
- * currentEpisode: {Episode|null} The episode currently being played
- * isPlaying: {boolean} Whether audio is currently playing
- * playEpisode: {(episode: Episode) => void} Plays the given episode
- * pause: {() => void} Pauses the current episode
- * togglePlayPause: {() => void} Toggles between play and pause
- * audioRef: {React.RefObject<HTMLAudioElement>} Ref to the audio element
- * increaseVolume: {() => void} Increases the audio volume
- * decreaseVolume: {() => void} Decreases the audio volume
- * playNext: {() => void} Plays the next episode in the playlist
- * playPrevious: {() => void} Plays the previous episode
- * currentIndex: {number} Index of the currently playing episode in the playlist
- * playlist: {Episode[]} Array of all playable episodes
- * favourites: {Episode[]} Array of favourited episodes with addedAt metadata
- * toggleFavourite: {(episode: Episode) => void} Adds or removes an episode from favourites
- * recentlyFavourited: {Episode[]} Episodes favourited in the last 7 days
- * lastAddedEpisode: {Episode|null} Most recently added favourited episode
- */
+ * AudioContext values used by this component:
+ * currentEpisode: Currently playing episode
+ * isPlaying: Whether audio is playing
+ * toggleFavourite(): Add/remove episode from favourites
+ * favourites: List of favourited episodes
+  */
 
 
-// Create a context to share audio state globally
+// Create audio context to share audio state globally
 const AudioContext = createContext();
 
 /**
@@ -89,12 +79,7 @@ const toggleFavourite = (episode, showTitle = "", seasonNumber = "", episodeNumb
     f.season === seasonNumber &&
     f.episode === episodeNumber
 );
-    //setFavourites(prev => {
-    // Check if episode is already in favourites (based on title & description)
-    //const isFav = prev.some(
-    //  f => f.title === episode.title && f.description === episode.description
-   // );
-
+    
      if (isFav) {
         // Remove from favourites
       return prev.filter(
@@ -106,8 +91,7 @@ const toggleFavourite = (episode, showTitle = "", seasonNumber = "", episodeNumb
       f.episode === episodeNumber
     )
 );
-           // f.title === episode.title && f.description === episode.description)
-      
+        
     } else {
          // Add to favourites with extra info
       const enrichedEpisode = {
@@ -122,16 +106,9 @@ const toggleFavourite = (episode, showTitle = "", seasonNumber = "", episodeNumb
   });
 };
 
-    {/*const updated = isFav
-      ? prev.filter(f => !(f.title === episode.title && f.description === episode.description))
-      : [...prev, episode];
 
-   // localStorage.setItem("favourites", JSON.stringify(updated));
-    return updated;
-  });
-};*/}
-
-  useEffect(() => {
+  // Warn before page unload if audio is playing
+useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (isPlaying) {
         e.preventDefault();
@@ -213,6 +190,7 @@ const toggleFavourite = (episode, showTitle = "", seasonNumber = "", episodeNumb
     console.log("Volume decreased to:", newVolume.toFixed(2));
   };
 
+  // Play next episode if available
     const playNext = () => {
     console.log("playNext called", { currentIndex, playlistLength: playlist.length });
     if (playlist.length === 0 || currentIndex < 0) return;
@@ -226,7 +204,7 @@ const toggleFavourite = (episode, showTitle = "", seasonNumber = "", episodeNumb
       console.log(" End of playlist.");
     }
   };
-
+//Play previous episode
   const playPrevious = () => {
      console.log("playPrevious called", { currentIndex, playlistLength: playlist.length });
 
@@ -270,7 +248,7 @@ const toggleFavourite = (episode, showTitle = "", seasonNumber = "", episodeNumb
  * Custom hook to access the audio context
  * @returns {Object} Audio state and controls
  */
-//export const useAudio = () => useContext(AudioContext);
+//  Custom hook for consuming context
 export const useAudio = () => {
   const context = useContext(AudioContext);
   if (!context) {

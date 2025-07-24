@@ -5,35 +5,23 @@ import { formatDate } from "../utils/formatDate";
 import "../index.css"; 
 import { genreMap } from "../utils/genreMap";
 import { truncateText } from "../utils/truncateText";
-//import AudioPlayer from "../components/AudioPlayer";
 import { useAudio } from "../context/AudioContext"; //Import the hook
 import FavoriteHeart from "../components/FavoriteHeart"; 
 
-
-
 /**
- * ShowDetailPage Component
- *
- * Fetches and displays detailed podcast information for a selected show.
- * - Uses the podcast `id` from the URL params.
- * - Displays general show metadata (title, description, image, genres).
- * - Renders each season with collapsible episodes.
- * - Only displays valid release dates/durations (hides 'Unknown').
- * 
- * Functionalities added for current project:
- * - Toggle season details on click.
- * - Remove fallback "Unknown" if metadata is missing.
- * - Truncate long episode descriptions for a cleaner UI.
- * Data is loaded via the show ID from the URL.
- * Uses the `useAudio` hook to manage audio playback.
- * 
+ * ShowDetailPage
+ * Fetches and displays detailed podcast info.
+ * - Shows metadata, genres, seasons, and episodes.
+ * - Allows episode playback and favoriting.
+ * - Uses route param ID to load the show.
  */
 
 export default function ShowDetailPage() {
   const { playEpisode, favourites, toggleFavourite } = useAudio(); // 💡 useAudio gives access to playback controller
   // Get podcast ID from URL
   const { id } = useParams();// Get show ID from route like /show/:id
-   // Component state
+
+  // Component state for show, loading, error, and season toggling
   const [show, setShow] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -145,10 +133,10 @@ export default function ShowDetailPage() {
 
               
             <div key={index} className="seasonBlock">
-                {/* Clickable season header to toggle visibility of episode list */}
+ {/*Toggle the season on header click (expand/collapse)*/}
               <div className="seasonHeader"
-               onClick={() => toggleSeason(index)} //line to toggle
-               style={{ cursor: "pointer" }}       //Makes it look clickable
+               onClick={() => toggleSeason(index)} 
+               style={{ cursor: "pointer" }} 
         >
                   {/* Season image fallback to show image */}
                 <img
@@ -162,15 +150,8 @@ export default function ShowDetailPage() {
                   <h3>
                     Season {index + 1}: {season.title || "Untitled Season"}
                   </h3>
-                  {/*<p>{season.description || "No description available."}</p>
-                  <p className="seasonMeta">
-                    {season.episodes?.length ?? 0} episodes · Released{" "}
-                    {season.episodes?.[0]?.date
-                      ? new Date(season.episodes[0].date).getFullYear()
-                      : "Unknown"}
-                  </p>*/}
-
-                  {/* Episode count and first episode release year if available */}
+           
+              {/*Episode count and first episode release year if available*/}
                   <p className="seasonMeta">
   {season.episodes?.length ?? 0} episodes
   {season.episodes?.[0]?.date && (
@@ -180,12 +161,9 @@ export default function ShowDetailPage() {
     </>
   )}
 </p>
-
-                </div>
+</div>
               </div>
-
-            
-               {/* Episodes list toggle — only show if this season is expanded */}
+{/* Episodes list toggle — only show if this season is expanded */}
               {expandedSeasonIndex === index && (
               <ul className="episodeList">
 
@@ -206,11 +184,7 @@ export default function ShowDetailPage() {
         />
           {/* Episode details */}
         <div className="episodeDetails">
-          {/* 
-  Episode Title 
-  - Displays episode index and title.
-  - Defaults to "Untitled Episode" if no title exists.
-*/}
+  
                       <h4 style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         Episode {epIndex + 1}: {ep.title || "Untitled Episode"}
                          <FavoriteHeart 
@@ -245,14 +219,12 @@ export default function ShowDetailPage() {
   ▶️ Play Episode
 </div>
 
-
-                       {/*
-  Episode Description
+{/* Episode Description
   - Truncates long descriptions to 100 characters.
   - Falls back to placeholder text if missing.
 */}
 
-                      <p>{truncateText(ep.description || "No description available.",100)}</p>
+<p>{truncateText(ep.description || "No description available.",100)}</p>
                       
 {/*
   Episode Meta Info

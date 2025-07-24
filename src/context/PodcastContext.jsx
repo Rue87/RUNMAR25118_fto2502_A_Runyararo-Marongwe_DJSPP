@@ -34,8 +34,6 @@ export const PodcastContext = createContext();
 export function usePodcastContext() {
   return useContext(PodcastContext); 
 }
-
-
 /**
  * PodcastProvider component wraps children in a context with state for
  * searching, sorting, filtering, and paginating podcast data.
@@ -65,18 +63,7 @@ export function PodcastProvider({ children,}) {
     load();
   }, []);
 
-  //Load podcasts when app starts
- {/* useEffect(() => {
-  async function load() {
-    const data = await fetchPodcasts();
-    setInitialPodcasts(data);
-  }
-  load();
-}, []);*/}
-
-
-
-  /**
+ /**
    * Dynamically calculate how many cards can fit on screen.
    * Sets a fixed 10 cards for tablet and smaller screens.
    */
@@ -142,13 +129,7 @@ export function PodcastProvider({ children,}) {
     return data;
   };
   /** @type {Podcast[]} */
-  {/*const filtered = applyFilters();
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
-  const currentPage = Math.min(page, totalPages);
-  const paged = filtered.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );*/}
+ 
   const filtered = React.useMemo(() => applyFilters(), [initialPodcasts, search, genre, sortKey]);
 const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
 const currentPage = Math.min(page, totalPages);

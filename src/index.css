@@ -210,3 +210,62 @@ body.dark-mode {
   background-color: var(--bg);
   color: var(--text);
 }
+
+
+
+/* App title - always black */
+
+.appTitle {
+color: var(--app-title);
+font-size: 2rem;
+font-weight: bold;
+margin: 1rem 0;
+}
+
+
+
+/* Shared card styles */
+
+.carouselCard,
+.podcastCard {
+background: var(--card-bg);
+color: var(--card-text);
+border-radius: 8px;
+padding: 0.5rem;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+text-align: center;
+cursor: pointer;
+transition: 0.3s, background-color 0.3s;
+}
+
+
+
+.carouselCard img,
+.podcastCard img {
+width: 100%;
+height: auto;
+border-radius: 6px;
+object-fit: cover;
+}
+
+
+
+.cardTitle {
+color: var(--card-text);
+font-size: 1rem;
+font-weight: 600;
+margin: 0.5rem 0;
+z-index: 1;
+position: relative;
+text-align: center;
+}
+
+
+
+/* Podcast card title fix to remain dark when needed */
+
+.podcastCard .cardTitle {
+color: var(--card-text);
+
+}
+
