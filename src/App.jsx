@@ -83,8 +83,10 @@ useEffect(() => {
                       <GenreFilter genres={genres} />
                       <SortSelect />
                     </section>
-                    <ShowCarousel shows={podcasts} />
-                    <PodcastGrid />
+                     {/* Title for the carousel */}
+                   <h2 className={styles.carouselTitle}>Recommended Shows</h2>
+                <ShowCarousel shows={podcasts} />
+                 <PodcastGrid />
                     <Pagination />
                   </>
                 }
