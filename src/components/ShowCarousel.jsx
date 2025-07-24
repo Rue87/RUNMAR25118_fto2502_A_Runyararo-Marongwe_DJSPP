@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import styles from './ShowCarousel.module.css';
 import CarouselSlide from "./CarouselSlide";
 import { genreMap } from "../utils/genreMap"; 
+import { useNavigate } from "react-router-dom";
 
 /**
  * ShowCarousel Component
@@ -10,6 +11,7 @@ import { genreMap } from "../utils/genreMap";
  * @param {Object[]} shows - Array of show objects with at least {id, title, image} 
  */
 export default function ShowCarousel({ shows }) {
+  const navigate = useNavigate();
   const containerRef = useRef(null);
 
  const scrollLeft = () => {
@@ -90,7 +92,8 @@ export default function ShowCarousel({ shows }) {
               image={show.image}
               title={show.title}
               genres={genreNames}
-              onClick={() => alert(`Clicked on ${show.title}`)}
+              onClick={() => navigate(`/shows/${show.id}`)} 
+             // onClick={() => alert(`Clicked on ${show.title}`)}
             />
           );
         })}
