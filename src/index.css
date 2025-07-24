@@ -1,12 +1,36 @@
+
 :root {
+  --card-bg: #fff;
+  --text: #222;
+  --header-bg: #ffffff;
+  --header-text: #222;
   --grey-text: #555;
+  --card-text: #222;
+  --app-title: #000;
 }
 
-body {
+body.dark-mode {
+  --card-bg:#2c2c2c;
+  --text: #f5f5f5;
+  --header-bg: #1a1a1a;
+  --header-text: #e0e0e0;
+  --app-title: #000;
+}
+
+/*body {
   font-family: "Inter", sans-serif;
   margin: 0;
   background: #f9f9f9;
+  color: var(--text)
+}*/
+
+body {
+  background-color: var(--card-bg);
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+  margin: 0;
 }
+
 .coverImage{
   max-width: 250px;
   border-radius: 10px;
@@ -179,4 +203,10 @@ body {
   border-radius: 999px;
   font-size: 0.85rem;
   font-weight: 500;
+}
+body.dark-mode {
+  --bg: #1a1a1a;
+  --text: #f5f5f5;
+  background-color: var(--bg);
+  color: var(--text);
 }

@@ -40,3 +40,14 @@
   border-radius: 12px;
   font-size: 0.75rem;
 }
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+  color: var(--text); 
+  text-align: center;
+  color: var(--text);
+}
+.carouselCard {
+  background: var(--card-bg);
+}

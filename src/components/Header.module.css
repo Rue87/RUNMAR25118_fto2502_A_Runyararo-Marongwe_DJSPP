@@ -1,4 +1,6 @@
 .appHeader {
+  background-color: var(--header-bg); /* Set dynamically based on theme */
+  color: var(--header-text);
   display: flex;
   align-items: center ;
   justify-content: space-between;
@@ -8,6 +10,7 @@
 }
 .navLinks {
   display: flex;
+  align-items: center;
   gap: 1rem;
   font-size: 1.1rem;
 }
@@ -24,4 +27,42 @@
 
 .navLinks a:hover {
   text-decoration: underline;
+}
+.toggleButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  margin-left: 1rem; /* space between links and toggle */
+  color: inherit;
+
+  display: inline-flex;
+  align-items: center;
+  padding: 0;       /* remove vertical space */
+  line-height: 1;   /* prevent text offset */
+  vertical-align: middle;
+}
+
+
+
+.header a {
+  color: #e0e0e0;
+  text-decoration: none;
+  margin-left: 1.5rem;
+  font-weight: 500;
+}
+
+.header a:hover {
+  color: white;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0;
 }
