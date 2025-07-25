@@ -3,6 +3,7 @@
 ## Overview
 
 This project is a portfolio-level technical assessment focused on a podcast browsing and listening experience. It demonstrates key front-end skills such as component architecture, global state management, persistent localStorage behavior, UI/UX polish, theme toggling, audio playback across routes, and deployability via Vercel.
+You can checkout my PodcastApp on: https://runmar-25118-fto2502-a-runyararo-ma.vercel.app
 
 ##  Features
 
@@ -54,7 +55,9 @@ This project is a portfolio-level technical assessment focused on a podcast brow
 
 ### Installation
 git clone https://github.com/Rue87/RUNMAR25118_fto2502_A_Runyararo-Marongwe_DJSPP
+
 cd RUNMAR25118_fto2502_A_Runyararo-Marongwe_DJSPP
+
 npm install
 
 ### Run locally
