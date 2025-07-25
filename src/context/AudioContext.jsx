@@ -6,11 +6,7 @@ import React, {
   useEffect
 } from "react";
 import { mockFavorites } from "../utils/mockFavorites"; 
-import {
-  savePlaybackProgress,
-  getPlaybackProgress,
-  clearPlaybackProgress
-} from "../utils/playbackProgress";
+import {savePlaybackProgress,getPlaybackProgress,clearPlaybackProgress} from "../utils/playbackProgress";
 //  Define the shape of an episode
 /**
  * @typedef {Object} Episode
@@ -31,7 +27,7 @@ import {
   */
 
 
-// Create audio context to share audio state globally
+{/* Create audio context to share audio state globally*/}
 const AudioContext = createContext();
 
 /**
@@ -42,30 +38,30 @@ const AudioContext = createContext();
  * @param {React.ReactNode} props.children - The components wrapped by this provider
  * @returns {JSX.Element}
  */
-// AudioProvider component wraps around the app and provides context values
+{/*AudioProvider component wraps around the app and provides context values*/}
 export function AudioProvider({ children }) {
-  // Ref to the HTML5 audio element
+  {/*Ref to the HTML5 audio element*/}
   const audioRef = useRef(new Audio());
 
-  // The currently playing episode
+  {/*The currently playing episode*/}
   const [currentEpisode, setCurrentEpisode] = useState(null);// This holds the episode
 
-  // Whether audio is currently playing
+  {/* Whether audio is currently playing*/}
   const [isPlaying, setIsPlaying] = useState(false);
   const [playlist, setPlaylist] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
 
-   // Initialize favourites from localStorage or fallback to mockFavorites
+   {/* Initialize favourites from localStorage or fallback to mockFavorites*/}
   const [favourites, setFavourites] = useState(() => {
-    // Load from localStorage if available
+    {/*Load from localStorage if available*/}
     const stored = localStorage.getItem("favourites");
-     // If found, parse and use it, otherwise use empty array
+     {/* If found, parse and use it, otherwise use empty array*/}
     return stored ? JSON.parse(stored) :  mockFavorites;
   });
 
-   //  Sync favourites to localStorage every time it changes
+   {/*  Sync favourites to localStorage every time it changes*/}
   useEffect(() => {
-    // Save the latest favourites to localStorage as a string
+    {/*Save the latest favourites to localStorage as a string*/}
     localStorage.setItem("favourites", JSON.stringify(favourites));
   }, [favourites]); // This runs every time 'favourites' changes
 
@@ -85,22 +81,15 @@ export function AudioProvider({ children }) {
   console.log("Saving playback progress:", key, audio.currentTime);
   savePlaybackProgress(key, audio.currentTime);
 };
-    //if (!currentEpisode?.id) {
-    //  console.warn("⚠️ Missing currentEpisode.id during time update.");
-    //  return;
-    //}
-    //console.log("Saving playback progress:", currentEpisode.id, audio.currentTime);
-    //savePlaybackProgress(currentEpisode.id, audio.currentTime);
- // };
+    
 
   audio.addEventListener("timeupdate", handleTimeUpdate);
   return () => audio.removeEventListener("timeupdate", handleTimeUpdate);
 }, [currentEpisode]);
 
 
-  // Toggle favourite: Add if not present, remove if already favourited
+  {/*Toggle favourite: Add if not present, remove if already favourited*/}
 const toggleFavourite = (episode, showTitle = "", seasonNumber = "", episodeNumber = "") => {
-    //const isFav = prev.some(
     setFavourites(prev =>{
         // Check if episode is already in favourites (based on all identifying fields
         const isFav = prev.some(
@@ -162,53 +151,43 @@ useEffect(() => {
    *
    * @param {Episode} episode - The episode object to play
    */
- 
   const playEpisode = (episode, playlistArray = [], index = -1) => {
   if (!audioRef.current) return;
 
+  const audio = audioRef.current;
+
   if (currentEpisode?.file !== episode.file) {
     // It's a new episode
-   // audioRef.current.src = episode.file;
-    const audio = audioRef.current;
+    setCurrentEpisode(episode); // Set this first, to update context/UI
+
     audio.src = episode.file;
-
-   // //  Resume from saved playback time if available
-const savedTime = getPlaybackProgress(episode.id);
-  //console.log("Restoring playback time for", episode.id, "time:", savedTime);
-{/*if (savedTime) {
-  audioRef.current.currentTime = savedTime;
-}
-    audioRef.current.play();
-    setCurrentEpisode(episode);*/}
-    if (savedTime && !isNaN(savedTime)) {
-      audio.addEventListener(
-        "loadedmetadata",
-        () => {
+    const savedTime = getPlaybackProgress(episode.id);
+    
+console.log(" Trying to load progress for", episode.title, "=>", savedTime);
+    audio.addEventListener(
+      "loadedmetadata",
+      () => {
+         console.log("loadedmetadata event fired");
+         //check if thw saved time is valid
+        if (savedTime && !isNaN(savedTime)) {
           audio.currentTime = savedTime;
-          console.log("Resumed playback at", savedTime);
-          audio.play();
-        },
-        { once: true }
-      );
-    }
-
-    audio.play();
-    setCurrentEpisode(episode);
-    setIsPlaying(true);
-
-    if (playlistArray.length > 0) {
-      setPlaylist(playlistArray);
-      setCurrentIndex(index);
-    }
-
-    console.log("Playing new episode:", episode.title);
+          console.log(" Resumed playback at", savedTime);
+        }
+        audio.play(); // Only play AFTER setting the currentTime
+        setIsPlaying(true);
+      },
+      { once: true }
+    );
   } else {
-    // Same episode, resume play
-    audioRef.current.play();
+    // Same episode, just resume
+    audio.play();
     setIsPlaying(true);
-
-    console.log("Resuming episode:", episode.title);
   }
+
+  setPlaylist(playlistArray);
+  setCurrentIndex(index);
+
+  console.log("Playing episode:", episode.title);
 };
 
 /**

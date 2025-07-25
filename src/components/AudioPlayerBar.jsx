@@ -81,20 +81,9 @@ const AudioPlayerBar = () => {
     <div className="audio-player-bar">
       {/* Left section: Episode art and titles */}
       <div className="episode-info">
-        {/*<img src="/cover.jpg" alt="Episode Art" className="cover" />
-        <div>
-          <h4>{currentEpisode.title}</h4>
-          <p>Podcast Title</p>
-        </div>
-      </div>*/}
-      {/*<img src={currentEpisode.image || "/fallback.jpg"} 
-      alt={currentEpisode.title}
-       className="cover" />*/}
        <div>
-{/*<h4>{currentEpisode.title || "Untitled Episode"}</h4>*/}
 <h4>{currentEpisode?.title || "No episode title"}</h4>
-{/*<p>{currentEpisode.podcastTitle || "Unknown Podcast"}</p>*/}
-            </div>
+</div>
             </div>
 
       {/* Middle section: Play/Pause and progress bar */}
@@ -111,7 +100,6 @@ const AudioPlayerBar = () => {
           {isPlaying ? "⏸️" : "▶️"}
         </button>
 
-    {/*<button onClick={playNext} className="nextBtn">⏭</button>*/}
          <button 
          onClick={() => { 
             console.log("next clicked");
