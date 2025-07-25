@@ -6,7 +6,11 @@ import React, {
   useEffect
 } from "react";
 import { mockFavorites } from "../utils/mockFavorites"; 
-
+import {
+  savePlaybackProgress,
+  getPlaybackProgress,
+  clearPlaybackProgress
+} from "../utils/playbackProgress";
 //  Define the shape of an episode
 /**
  * @typedef {Object} Episode
@@ -64,6 +68,34 @@ export function AudioProvider({ children }) {
     // Save the latest favourites to localStorage as a string
     localStorage.setItem("favourites", JSON.stringify(favourites));
   }, [favourites]); // This runs every time 'favourites' changes
+
+  useEffect(() => {
+  const audio = audioRef.current;
+  if (!audio || !currentEpisode) return;
+
+  console.log("currentEpisode object:", currentEpisode); 
+
+  const handleTimeUpdate = () => {
+     const key = currentEpisode?.title || currentEpisode?.file;
+  if (!key) {
+    console.warn( "Cannot save playback progress: no valid key.");
+    return;
+  }
+
+  console.log("Saving playback progress:", key, audio.currentTime);
+  savePlaybackProgress(key, audio.currentTime);
+};
+    //if (!currentEpisode?.id) {
+    //  console.warn("⚠️ Missing currentEpisode.id during time update.");
+    //  return;
+    //}
+    //console.log("Saving playback progress:", currentEpisode.id, audio.currentTime);
+    //savePlaybackProgress(currentEpisode.id, audio.currentTime);
+ // };
+
+  audio.addEventListener("timeupdate", handleTimeUpdate);
+  return () => audio.removeEventListener("timeupdate", handleTimeUpdate);
+}, [currentEpisode]);
 
 
   // Toggle favourite: Add if not present, remove if already favourited
@@ -136,8 +168,31 @@ useEffect(() => {
 
   if (currentEpisode?.file !== episode.file) {
     // It's a new episode
-    audioRef.current.src = episode.file;
+   // audioRef.current.src = episode.file;
+    const audio = audioRef.current;
+    audio.src = episode.file;
+
+   // //  Resume from saved playback time if available
+const savedTime = getPlaybackProgress(episode.id);
+  //console.log("Restoring playback time for", episode.id, "time:", savedTime);
+{/*if (savedTime) {
+  audioRef.current.currentTime = savedTime;
+}
     audioRef.current.play();
+    setCurrentEpisode(episode);*/}
+    if (savedTime && !isNaN(savedTime)) {
+      audio.addEventListener(
+        "loadedmetadata",
+        () => {
+          audio.currentTime = savedTime;
+          console.log("Resumed playback at", savedTime);
+          audio.play();
+        },
+        { once: true }
+      );
+    }
+
+    audio.play();
     setCurrentEpisode(episode);
     setIsPlaying(true);
 
@@ -146,13 +201,13 @@ useEffect(() => {
       setCurrentIndex(index);
     }
 
-    console.log("🎧 Playing new episode:", episode.title);
+    console.log("Playing new episode:", episode.title);
   } else {
     // Same episode, resume play
     audioRef.current.play();
     setIsPlaying(true);
 
-    console.log("▶️ Resuming episode:", episode.title);
+    console.log("Resuming episode:", episode.title);
   }
 };
 

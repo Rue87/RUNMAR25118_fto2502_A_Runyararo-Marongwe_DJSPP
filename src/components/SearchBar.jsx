@@ -18,6 +18,8 @@ export default function SearchBar() {
   return (
     <input
       type="search"
+      id="podcast-search"
+      name="search"
       placeholder="Search podcasts…"
       value={value}
       onChange={(e) => setValue(e.target.value)}

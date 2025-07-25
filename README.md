@@ -1,90 +1,150 @@
-# DJS04 – React Podcast App with Search, Sort, Filter & Pagination
+# Podcast Discovery Web App
 
-This project is a **React-based podcast browsing application** that allows users to explore podcasts using powerful features such as search, sort, filter by genre, and automatic pagination. It builds upon earlier solutions (DJS03) and introduces shared state management using the React Context API.
+## Overview
 
-## Core Functionality
+This project is a portfolio-level technical assessment focused on a podcast browsing and listening experience. It demonstrates key front-end skills such as component architecture, global state management, persistent localStorage behavior, UI/UX polish, theme toggling, audio playback across routes, and deployability via Vercel.
 
-- **Fetch Podcasts from API**
+##  Features
 
-  - Data is loaded from: `https://podcast-api.netlify.app/shows`
-  - Podcasts include metadata like title, updated date, genres, image, and seasons
+- **Global Audio Player**
+  - Persistent audio player across all routes
+  - Continues playback across page navigation
+  - Supports play, pause, seek, and progress bar
+  - Prompts user before reloading while playing audio
 
-- **Search**
+- **Favourites System**
+  - Users can favourite/unfavourite episodes
+  - Favourite state is persisted via localStorage
+  - Favourites grouped by show
+  - Shows associated season, episode, and added date
+  - Sorting options by title(A-Z, Z-A)
+ 
+- **Show Carousel**
+  - Interactive horizontally scrolling carousel
+  - Displays title, image, and genre tags
+  - Loops continuously
+  - Clicking a show navigates to its details page
 
-  - Users can search podcasts by title
-  - Case-insensitive and dynamically updates the result list
+- **Dark/Light Theme Toggle**
+  - Toggle switch for theme selection
+  - Theme state saved to localStorage
+  - Smooth visual transition between modes
+  - Theme is applied globally and consistently
+  - Icon (sun/moon) reflects current mode
 
-- **Sort**
+- **Routing & Refresh Resilience**
+  - Fully functional react-router-dom setup
+  - No crashes on route refresh (e.g., /shows/3)
+  - Lazy loading and suspense for optimization
 
-  - Sort options include:
-    - Default
-    - Newest (by updated date)
-    - Oldest
-    - Title A → Z
-    - Title Z → A
+## Technologies Used
+  - React (with Hooks)
+  - React Router v6
+  - CSS Modules for scoped styling
+  - HTML5 <audio> + Ref for player control
+  - LocalStorage for persistent UI preferences and state
+  - Vercel for deployment
+  - **metatags.io** for SEO & rich previews
 
-- **Genre Filter**
+## Getting Started
 
-  - Podcasts can be filtered by genre using a dropdown
-  - All available genres are loaded from static data
+### Prerequisites
+  - Node.js (v16 or higher)
+  - npm or yarn
 
-- **Pagination**
+### Installation
+git clone https://github.com/Rue87/RUNMAR25118_fto2502_A_Runyararo-Marongwe_DJSPP
+cd RUNMAR25118_fto2502_A_Runyararo-Marongwe_DJSPP
+npm install
 
-  - The app dynamically adjusts how many podcast cards to show per page
-  - Uses screen width to compute optimal layout (e.g., 2 rows × n columns)
-  - Defaults to 10 items per page for tablet and smaller screens
+### Run locally
+npm run dev
 
-- **Shared State with Context API**
-  - Uses a `PodcastProvider` to manage global podcast state
-  - Exposes search term, sort key, selected genre, page, and filtered podcasts
-  - Components consume state via `usePodcasts()` or `PodcastContext`
 
-## Project Structure
-
+##  Project Structure
 ```
-/src
-│
-├── /api
-│ └── fetchPodcasts.js # Fetch podcasts from the API
-│
-├── /components
-│ ├── Header.jsx # Top navigation bar with controls
-│ ├── PodcastCard.jsx # Individual podcast preview card
-│ ├── PodcastGrid.jsx # Grid layout of podcast cards
-│
-├── /context
-│ └── PodcastContext.jsx # React context for global podcast state
-│
-├── /utils
-│ └── formatDate.js # Formats ISO date to readable format
-│
-├── App.jsx # Root app component
-└── main.jsx # React entry point
+.
+├── public/
+│   └── favicon.png
+├── src/
+│   ├── api/
+│   │   ├── fetchPodcasts.js
+│   │   └── fetchShowById.js
+│   ├── components/
+│   │   ├── AudioPlayerBar.css
+│   │   ├── AudioPlayerBar.jsx
+│   │   ├── AudioPlayer.jsx
+│   │   ├── CarouselSlide.jsx
+│   │   ├── CarouselSlide.module.css
+│   │   ├── FavoriteHeart.jsx
+│   │   ├── FavouriteEpisode.jsx
+│   │   ├── GenreFilter.jsx
+│   │   ├── GenreFilter.module.css
+│   │   ├── Header.jsx
+│   │   ├── Header.module.css
+│   │   ├── Pagination.jsx
+│   │   ├── Pagination.module.css
+│   │   ├── PersistentAudioPlayer.jsx
+│   │   ├── PodcastCard.jsx
+│   │   ├── Searchbar.jsx
+│   │   ├── Searchbar.module.css
+│   │   ├── ShowCarousel.jsx
+│   │   ├── ShowCarousel.module.css
+│   │   ├── SortSelect.jsx
+│   │   └── SortSelect.module.css
+│   ├── context/
+│   │   ├── AudioContext.jsx
+│   │   └── PodcastContext.jsx
+│   ├── pages/
+│   │   ├── App.jsx
+│   │   ├── App.module.css
+│   │   ├── FavouritesPage.jsx
+│   │   └── ShowDetailPage.jsx // Corrected to ShowDetailPage.jsx
+│   ├── utils/
+│   │   ├── formatDateTime.js    
+│   │   ├── genreMap.js          
+│   │   ├── mockFavorites.js     
+│   │   └── truncateText.js      
+│   ├── App.css
+│   ├── index.css
+│   └── main.jsx
+├── .gitignore
+├── eslint.config.js
+├── index.html
+├── package.json
+├── package-lock.json
+└── vite.config.js
 ```
-
 ## How It Works
+ - On initial load, the app fetches all podcast show data from the public API.
+ - The fetched data is accessed throughout the app via state and passed into   various components.
+ - react-router-dom handles navigation and deep linking across pages like /shows/:id and /favourites.
+ - The theme toggle updates a class on <body>, with the selected mode saved to localStorage and applied on reload.
+ - The audio player is controlled via useRef and React state, ensuring seamless playback across routes.
+ - Favourites are stored and retrieved from localStorage, and episodes are grouped, displayed, and sorted on a dedicated page.
 
-- When the app loads, it fetches all podcast data once.
-- The data is passed into the `PodcastProvider`, which handles:
-  - Searching titles
-  - Sorting by selected key
-  - Filtering by genre
-  - Splitting into pages based on screen size
-- Components like `PodcastGrid` display the processed data.
+## Challenges Encountered
+1. Persisting Audio Playback Across Routes
+- **Challenge:** Maintaining a consistent audio experience when navigating between routes without restarting playback.
+- **Solution:** Implemented a global <AudioContext> with a persistent <audio> element controlled via useRef, ensuring playback state survived route changes.
 
-## How to Run
+2. Routing and Deep Linking
+- **Challenge:** Ensuring no crashes or 404s when refreshing direct URLs like /shows/3.
+- **Solution:** Carefully configured react-router-dom and hosted on Vercel with rewrite rules to support client-side routing.
 
-1. Clone the project or download the source code.
-2. Install dependencies using:
+3. Favourites Persistence
+- **Challenge:** Saving and retrieving favourited episodes reliably across sessions.
+- **Solution:** Used localStorage to store favourites, and structured them by show and episode metadata for grouped display.
 
-   ```bash
-   npm install
-   ```
+6. State Sync with UI Elements
+- **Challenge:** Keeping global state (audio, theme, favourites) in sync with individual components (buttons, progress bars, icons).
+- **Solution:** Leveraged custom hooks and context consumers with modular updates to avoid prop drilling and keep UI reactive.
 
-3. Run the development server with:
+PS:This project is open for collaboration.My contacts are just below.
 
-   ```bash
-   npm run dev
-   ```
+## Contact
+- **Name**: Runyararo Marongwe  
+- **Email**: mrunya87@gmail.com  
+- **GitHub**: [Rue87](https://github.com/Rue87)  
+- **LinkedIn**: [Runyararo Marongwe](https://www.linkedin.com/in/runyararo-marongwe-24835279)
 
-4. Open http://localhost:5173 in your browser to view the app.
