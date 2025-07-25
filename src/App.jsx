@@ -84,7 +84,14 @@ useEffect(() => {
                       <SortSelect />
                     </section>
                      {/* Title for the carousel */}
-                   <h2 className={styles.carouselTitle}>Recommended Shows</h2>
+                   <h2 className={styles.carouselTitle}
+                   style={{
+    marginLeft: "24px", // adjust this to match the carousel card padding
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+    marginBottom: "1rem"
+                   }}
+                   >Recommended Shows</h2>
                 <ShowCarousel shows={podcasts} />
                  <PodcastGrid />
                     <Pagination />

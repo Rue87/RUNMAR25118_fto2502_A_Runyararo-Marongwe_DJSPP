@@ -133,7 +133,11 @@ body {
   display: flex;
   align-items: flex-start;
   gap: 12px; /* space between image and text */
-  margin-bottom: 16px
+  padding-bottom: 1rem; /* add some spacing below content */
+  border-bottom: 1px solid #ddd; /* 👈 demarcation line */
+}
+.episodeItem:last-child {
+  border-bottom: none;
 }
 
 .episodeItem img {

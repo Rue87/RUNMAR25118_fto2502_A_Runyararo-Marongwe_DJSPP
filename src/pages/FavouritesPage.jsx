@@ -62,36 +62,48 @@ favourites.forEach((ep) =>
             <h3>{showTitle}</h3>
             <ul>
               {sortedEpisodes.map((ep, i) => (
- <li key={ep.id || ep.file || i} style={{ marginBottom: "1rem" }}>
-                  {/* Season + Episode number */}
-                  {(ep.season || ep.episode) && (
-                    <p style={{ fontWeight: "bold", margin: "0.25rem 0" }}>
-                      Season {ep.season || "?"}, Episode {ep.episode || "?"}
-                    </p>
-                  )}
+              // Render each episode as a list item with unique key
+ <li
+  key={ep.id || i}
+  style={{
+    border: "1px solid #ddd", // Light border for visual separation
+    borderRadius: "8px",
+    padding: "1rem",
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.5rem"
+  }}
+>
+   {/* Header section with episode title and favorite button */}
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+    <h4 style={{ margin: 0 }}>{ep.title || "Untitled Episode"}</h4>
+     {/* Favorite heart icon to toggle favorite status */}
+    <FavoriteHeart
+      episode={ep}
+      showTitle={ep.showTitle}
+      seasonNumber={ep.season}
+      episodeNumber={ep.episode}
+    />
+  </div>
+ {/* Conditional rendering of season and episode number if available */}
+  {(ep.season || ep.episode) && (
+    <p style={{ fontWeight: "bold", margin: "0.25rem 0" }}>
+      Season {ep.season || "?"}, Episode {ep.episode || "?"}
+    </p>
+  )}
 
-                  {/* Episode title */}
-                  <h4>{ep.title || "Untitled Episode"}</h4>
 
-                  {/* Episode description */}
-                  <p>{ep.description || "No description available."}</p>
+    {/* Episode description or fallback text */}
+  <p>{ep.description || "No description available."}</p>
 
-                  {/* Added date */}
-                  <p style={{ fontStyle: "italic", fontSize: "0.9rem", color: "#666" }}>
-                    Added on: {ep.addedAt ? formatDateTime(ep.addedAt) : "Unknown date"}
-                  </p>
+  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "0.5rem" }}>
+    <p style={{ fontStyle: "italic", fontSize: "0.9rem", color: "#666", margin: 0 }}>
+      Added on: {ep.addedAt ? formatDateTime(ep.addedAt) : "Unknown date"}
+    </p>
+    <button onClick={() => playEpisode(ep)}>▶️ Play</button>
+  </div>
+</li>
 
-                  {/* Play button */}
-                  <button onClick={() => playEpisode(ep)}>▶️ Play</button>
-
-                  {/* FavoriteHeart toggler */}
-                  <FavoriteHeart
-                    episode={ep}
-                    showTitle={ep.showTitle}
-                    seasonNumber={ep.season}
-                    episodeNumber={ep.episode}
-                  />
-                </li>
               ))}
             </ul>
           </div>
